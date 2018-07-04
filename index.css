@@ -1,1 +1,77 @@
-/* TO DO */
+body {
+	margin: 0;
+	background-color: #2a2a2e;
+	font-family: segoe ui;
+}
+
+#deck {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+#card {
+	position: relative;
+	max-width: calc(100vw - 128px - 8px);
+	margin-top: 88px;
+}
+
+#card:last-child {
+	margin-bottom: 8px;
+}
+
+#card > #img {
+	position: relative;
+	left: calc(50% - 32px);
+	max-width: calc(100vw - 64px - 8px);
+	transform: translate(-50%);
+}
+
+#card > .btn {
+	position: absolute;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background-image: url(assets/img/spritesheet.png);
+	background-color: #fff;
+}
+
+#card > .btn:active {
+	background-color: #9f9f9f;
+}
+
+#card > #up {
+	left: 100%;
+	margin-left: 8px;
+	background-position: 0 48px;
+}
+
+#card > #down {
+	left: 100%;
+	margin-left: 8px;
+	margin-top: 8px;
+	background-position: 96 48;
+	transform: translateY(100%);
+}
+
+#card > #msg {
+	top: 100%;
+	left: 100%;
+	margin-left: 8px;
+	background-position: 48px 0;
+	transform: translateY(-100%);
+}
+
+#card > label {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	line-height: 42px;
+	color :#fff;
+	font-size: 24px;
+	text-align: center;
+	transform: translateY(calc(-100% - 8px));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}

@@ -1,6 +1,7 @@
 body {
 	margin: 0;
-	background-color: #2a2a2e;
+	background-color: #1a1a1e;
+	color: #fff;
 	font-family: segoe ui;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -11,20 +12,23 @@ body {
 
 #deck {
 	position: absolute;
-	top: 8px;
-	left: 8px;
+	top: 32px;
+	left: 64px;
 	width: calc(100% - 480px);
 	color: #fff;
+	transition: all 0.2s;
 }
 
 #card {
 	position: relative;
+	display: block;
 	max-height: 480px;
 	margin-bottom: -1px;
 	padding: 8px;
-	background-color: #3a3a3e;
+	background-color: #2a2a2e;
 	border: 1px solid #ffffff3f;
 	overflow: hidden;
+	cursor: pointer;
 }
 
 #card:hover {
@@ -33,10 +37,7 @@ body {
 }
 
 #card:last-child {
-	margin-bottom: 8px;
-}
-
-#card > #img {
+	margin-bottom: 32px;
 }
 
 #card > .btn {
@@ -73,36 +74,130 @@ body {
 }
 
 
+/* Profile */
+
+#profile {
+	position: absolute;
+	top: 32px;
+	left: 100%;
+	width: 320px;
+	height: 320px;
+	margin-left: -32px;
+	background-color: #2a2a2e;
+	border: 1px solid #ffffff3f;
+	transform: translateX(-100%);
+}
+
+#profile > #profilepicture {
+	position: relative;
+	display: block;
+	width: 64px;
+	height: 64px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 16px;
+	margin-bottom: 8px;
+	border-radius: 50%;
+}
+
+#profile > #profilename {
+	display: block;
+	height: 0;
+	margin-bottom: 64px;
+	text-align: center;
+	font-weight: lighter;
+	font-size: 24px;
+}
+
+#profile > .name {
+	position: relative;
+	left: 8px;
+	line-height: 30px;
+}
+
+#profile > .btn {
+	display: block;
+	height: 32px;
+	line-height: 32px;
+	margin: 16px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	border-radius: 4px;
+	background-color: #fff;
+	color: #000;
+	text-align: center;
+	cursor: pointer;
+}
+
+#profile > .btn:hover {
+	background-color: #9f9f9f;
+}
+
+
 /* Card Elements */
 
-.header {
-	display: inline-block;
+#card .header {
+	display: block;
 	top: 0;
 	left: 0;
+	margin-top: 16px;
 	margin-bottom: 16px;
 	font-size: 24px;
 	font-weight: lighter;
 }
 
-.poster {
-	display: inline-block;
-	font-size: 16px;
+#card .poster {
+	position: absolute;
+	top: 0;
+	left: -4px;
+	color: #fff;
+	font-size: 14px;
 	text-indent: 8px;
 }
 
-img {
+#card .rep {
+	position: absolute;
+	top: 0;
+	left: 100%;
+	margin-left: -4px;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+	transform: translateX(-100%);
+}
+
+#card img {
 	display: block;
 	margin: auto;
 	max-height: 480px;
 }
 
 
-@media screen and (max-width: 640px) {
+/* Etcetera */
+
+a:link {
+	color: #fff;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #7a7a7e;
+	text-decoration: none;
+}
+
+
+@media screen and (max-width: 1136px) {
 	#deck {
 		position: absolute;
 		left: 50%;
-		width: calc(100% - 32px);
+		width: calc(100% - 64px);
+		max-width: 640px;
 		height: 320px;
 		transform: translateX(-50%);
+	}
+
+	#profile {
+		display: none;
+		pointer-events: none;
 	}
 }

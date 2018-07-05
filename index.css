@@ -2,18 +2,34 @@ body {
 	margin: 0;
 	background-color: #2a2a2e;
 	font-family: segoe ui;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
 #deck {
 	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
+	top: 8px;
+	left: 8px;
+	width: calc(100% - 480px);
+	color: #fff;
 }
 
 #card {
 	position: relative;
-	max-width: calc(100vw - 128px - 8px);
-	margin-top: 88px;
+	max-height: 480px;
+	margin-bottom: -1px;
+	padding: 8px;
+	background-color: #3a3a3e;
+	border: 1px solid #ffffff3f;
+	overflow: hidden;
+}
+
+#card:hover {
+	border: 1px solid #fff;
+	z-index: 2;
 }
 
 #card:last-child {
@@ -21,10 +37,6 @@ body {
 }
 
 #card > #img {
-	position: relative;
-	left: calc(50% - 32px);
-	max-width: calc(100vw - 64px - 8px);
-	transform: translate(-50%);
 }
 
 #card > .btn {
@@ -34,6 +46,8 @@ body {
 	border-radius: 50%;
 	background-image: url(assets/img/spritesheet.png);
 	background-color: #fff;
+	box-shadow: 0 0 5px #000;
+	transform: translateX(-100%);
 }
 
 #card > .btn:active {
@@ -42,36 +56,53 @@ body {
 
 #card > #up {
 	left: 100%;
-	margin-left: 8px;
 	background-position: 0 48px;
 }
 
 #card > #down {
+	top: 56px;
 	left: 100%;
-	margin-left: 8px;
-	margin-top: 8px;
 	background-position: 96 48;
-	transform: translateY(100%);
 }
 
 #card > #msg {
 	top: 100%;
 	left: 100%;
-	margin-left: 8px;
 	background-position: 48px 0;
-	transform: translateY(-100%);
+	transform: translate(-100%, -100%);
 }
 
-#card > label {
-	position: absolute;
+
+/* Card Elements */
+
+.header {
+	display: inline-block;
+	top: 0;
 	left: 0;
-	width: 100%;
-	line-height: 42px;
-	color :#fff;
+	margin-bottom: 16px;
 	font-size: 24px;
-	text-align: center;
-	transform: translateY(calc(-100% - 8px));
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis
+	font-weight: lighter;
+}
+
+.poster {
+	display: inline-block;
+	font-size: 16px;
+	text-indent: 8px;
+}
+
+img {
+	display: block;
+	margin: auto;
+	max-height: 480px;
+}
+
+
+@media screen and (max-width: 640px) {
+	#deck {
+		position: absolute;
+		left: 50%;
+		width: calc(100% - 32px);
+		height: 320px;
+		transform: translateX(-50%);
+	}
 }

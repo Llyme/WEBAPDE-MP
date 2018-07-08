@@ -74,19 +74,30 @@ body {
 }
 
 
-/* Profile */
+/* Sidebar */
 
-#profile {
+#sidebar {
 	position: absolute;
 	top: 32px;
 	left: 100%;
 	width: 320px;
-	height: 320px;
 	margin-left: -32px;
-	background-color: #2a2a2e;
-	border: 1px solid #ffffff3f;
 	transform: translateX(-100%);
 }
+
+#sidebar > * {
+	display: block;
+	position: relative;
+	background-color: #2a2a2e;
+	margin-bottom: 32px;
+	border: 1px solid #ffffff3f;
+}
+
+#sidebar > *:last-child {
+	margin-bottom: 0;
+}
+
+/* Profile & Sign Up View */
 
 #profile > #profilepicture {
 	position: relative;
@@ -115,7 +126,8 @@ body {
 	line-height: 30px;
 }
 
-#profile > .btn {
+#profile > .btn, #signup > .btn {
+	position: relative;
 	display: block;
 	height: 32px;
 	line-height: 32px;
@@ -129,8 +141,30 @@ body {
 	cursor: pointer;
 }
 
+#profile > .btn:last-child, #signup > .btn:last-child {
+	margin-bottom: 16px;
+}
+
 #profile > .btn:hover {
 	background-color: #9f9f9f;
+}
+
+#profile > input, #signup > input {
+	position: relative;
+	display: block;
+	width: calc(100% - 32px);
+	line-height: 24px;
+	margin: 8px;
+	margin-left: 16px;
+	text-indent: 4px;
+}
+
+#profile > #username, #signup > #regusername {
+	margin-top: 16px;
+}
+
+#profile > #password, #signup > #regconfirm {
+	margin-bottom: 24px;
 }
 
 
@@ -196,7 +230,7 @@ a:visited {
 		transform: translateX(-50%);
 	}
 
-	#profile {
+	#sidebar {
 		display: none;
 		pointer-events: none;
 	}

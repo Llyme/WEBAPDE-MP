@@ -1,28 +1,3 @@
-// Tiny jQuery.
-const q = (a, b) => { if (b == null) switch(a[0]) {
-	case "#":
-		return document.getElementById(a.substr(1));
-	case ".":
-		return document.getElementsByClassName(a.substr(1));
-	case "!":
-		return document.createElement(a.substr(1));
-	default:
-		return document.getElementsByTagName(a);
-} else switch(b[0]) {
-	case "#":
-		let l = a.childNodes;
-		b = b.substr(1);
-
-		for (let i in l) if (l[i].id === b)
-			return l[i];
-
-		return null;
-	case ".":
-		return a.getElementsByClassName(b.substr(1));
-	default:
-		return a.getElementsByTagName(b);
-}};
-
 // Tiny relay.
 const r = (p, c) => {
 	let v = new XMLHttpRequest();
@@ -106,8 +81,8 @@ document.addEventListener("beforeunload", event => {
 		// Login.
 
 		let login = _ => {
-			let a = q(e.profile, "#username").value.toLowerCase(),
-				b = q(e.profile, "#password").value;
+			let a = q("#profile #username").value.toLowerCase(),
+				b = q("#profile #password").value;
 
 			r({
 				method: "POST",
@@ -127,9 +102,9 @@ document.addEventListener("beforeunload", event => {
 
 		let keydown = event => (event.keyCode == 13 && login());
 
-		q(e.profile, "#username").addEventListener("keydown", keydown);
-		q(e.profile, "#password").addEventListener("keydown", keydown);
-		q(e.profile, "#login").addEventListener("click", login);
+		q("#profile #username").addEventListener("keydown", keydown);
+		q("#profile #password").addEventListener("keydown", keydown);
+		q("#profile #login").addEventListener("click", login);
 
 
 		// Register.
@@ -161,7 +136,7 @@ document.addEventListener("beforeunload", event => {
 		e.signup_username.addEventListener("keydown", keydown);
 		e.signup_password.addEventListener("keydown", keydown);
 		e.signup_confirm.addEventListener("keydown", keydown);
-		q(e.signup, "#register").addEventListener("click", register);
+		q("#signup #register").addEventListener("click", register);
 	} else r({ // See if the user's credentials are legitimate.
 		method: "POST",
 		url: "login",
@@ -181,7 +156,7 @@ document.addEventListener("beforeunload", event => {
 				'<a id=myaccount class=btn href="">My Account</a>' +
 				'<a id=logout class=btn href="">Logout</a>';
 
-			q(e.profile, "#logout").addEventListener("click", _ => {
+			q("#profile #logout").addEventListener("click", _ => {
 				// Clear everything when the user logs out.
 				sessionStorage.removeItem("username");
 				sessionStorage.removeItem("password");

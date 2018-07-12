@@ -6,6 +6,7 @@
 </head>
 
 <body>
+      <script src="jq.js"></script>
     <header>
         <div class="flexcontainer">
             <img src="https://i.imgur.com/2EiDBoG.jpg" alt="logo" />
@@ -25,42 +26,108 @@
     </div>
     <!--<label class=name><a href="http://www.google.com">Login</a></label>-->
 
-    <div id=deck>
+  <div id=deck>
         <a id=card href="">
             <label class=poster>Posted by Wowza</label>
             <label class=rep>123</label>
             <label class=header>Hello Man</label>
-            <img id=img src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/34985071_1105616082955769_7177104125023223808_n.jpg?_nc_cat=0&oh=81db92499bfb8089c88ea981f423e714&oe=5BDA23E5" draggable=false>
+            <img class=myImg src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/34985071_1105616082955769_7177104125023223808_n.jpg?_nc_cat=0&oh=81db92499bfb8089c88ea981f423e714&oe=5BDA23E5" alt = "Hello Man posted by wowza #shh #dank" draggable=false>
+            <div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+   <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
         </a>
         <a id=card href="">
             <label class=poster>Posted by Pepe</label>
             <label class=rep>123</label>
             <label class=header>Sad Memes</label> 
-            <img id=img src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36692128_193090664664977_726496007335968768_n.jpg?_nc_cat=0&oh=5d1d36590a31bcd7e4c2da0d5a207a4a&oe=5BD14E2D" draggable=false>
+            <img class=myImg src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36692128_193090664664977_726496007335968768_n.jpg?_nc_cat=0&oh=5d1d36590a31bcd7e4c2da0d5a207a4a&oe=5BD14E2D" alt = "Sad Memes posted by Pepe #LoveMe #SadBoi" draggable=false>
+            <div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+   <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
         </a>
         <a id=card href="">
             <label class=poster>Posted by OmegaLul</label>
             <label class=rep>123</label>
             <label class=header>Me</label>
-            <img id=img src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36560238_2391013394276780_5377410659317186560_o.jpg?_nc_cat=0&oh=373f5488be73f631ac3f01f240a2badf&oe=5BA3B607" draggable=false>
+            <img class=myImg src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36560238_2391013394276780_5377410659317186560_o.jpg?_nc_cat=0&oh=373f5488be73f631ac3f01f240a2badf&oe=5BA3B607" alt = "Me posted by OmegaLul #Me" draggable=false>
+            <div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+   <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
         </a>
         <a id=card href="">
             <label class=poster>Posted by Kappa</label>
             <label class=rep>123</label>
             <label class=header>Coolest PM</label>
-            <img id=img src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36707700_465473153880547_3454880454635683840_n.jpg?_nc_cat=0&oh=ddbd0b917ad1d8a86786dc016b6dc6bf&oe=5BA3051F" draggable=false>
+            <img class=myImg src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36707700_465473153880547_3454880454635683840_n.jpg?_nc_cat=0&oh=ddbd0b917ad1d8a86786dc016b6dc6bf&oe=5BA3051F" alt = "Coolest PM posted by Kappa #Ouch" draggable=false>
+            <div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+   <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
         </a>
         <a id=card href="">
             <label class=poster>Posted by Kappa</label>
             <label class=rep>123</label>
             <label class=header>Class Contribution</label>
-            <img id=img src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/29244699_202151037046954_5264677942574710784_n.jpg?_nc_cat=0&oh=08ce3252b7d23578afe26994de2c5716&oe=5BA60C85" draggable=false>
+            <img class=myImg src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/29244699_202151037046954_5264677942574710784_n.jpg?_nc_cat=0&oh=08ce3252b7d23578afe26994de2c5716&oe=5BA60C85" alt = "Class Contributionposted by Kappa #Asian #money" draggable=false>
+            <div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+   <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
         </a>
         <a id=card href="">
             <label class=poster>Posted by BB</label>
             <label class=rep>123</label>
             <label class=header>Younger siblings are slaves</label>
-            <img id=img src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36263191_1775932565834959_7871936907603607552_n.jpg?_nc_cat=0&oh=71e9726c194dc66f5860919f0e85ebc1&oe=5BD2A1F0" draggable=false>
+            <img class=myImg src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36263191_1775932565834959_7871936907603607552_n.jpg?_nc_cat=0&oh=71e9726c194dc66f5860919f0e85ebc1&oe=5BD2A1F0" alt = "Younger siblings are slaves posted by BB #siblings #slavery"draggable=false>
+            <div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+   <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
         </a>
         <footer>
             <div>Site Map</div>
@@ -68,6 +135,7 @@
         </footer>
     </div>
     <script src=index.js></script>
-</body>
+    <script src=modals.js></script>
+    </body>
 
 </html>

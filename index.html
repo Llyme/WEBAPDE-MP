@@ -4,6 +4,7 @@
     <title>LuLgag</title>
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <script src=assets/js/qTiny.js></script>
+    <script src=assets/js/rTiny.js></script>
 </head>
 
 <body>
@@ -16,7 +17,11 @@
         </div>    
     </header>
     <div id=sidebar>
-        <div id=profile></div>
+        <div id=profile>
+            <input type=text id=username placeholder=Username>
+            <input type=password id=password placeholder=Password>
+            <a id=login class=btn>Login</a>
+        </div>
         <div id=signup>
             <input id=regusername type=text placeholder=Username>
             <input id=regpassword type=password placeholder=Password>

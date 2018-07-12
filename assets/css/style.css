@@ -1,269 +1,370 @@
 body {
-    margin: 0;
-    background-color: #1a1a1e;
-    color: #fff;
-    font-family: segoe ui;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+	margin: 0;
+	background-color: #1a1a1e;
+	color: #fff;
+	font-family: segoe ui;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
 /* Header */
 .flexcontainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 }
 header {
-    height: 60px;
-    background-color: black;
+	height: 60px;
+	background-color: black;
 }
 header img {
-    position: absolute;
-    top: 7px;
-    left: 320px;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+	position: absolute;
+	top: 7px;
+	left: 320px;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
 }
 header h1 {
-    position: absolute;
-    top: 3px;
-    left: 370px;
-    padding-right: 10px;
-    margin-top: 0em;
-    color: white;
+	position: absolute;
+	top: 3px;
+	left: 370px;
+	padding-right: 10px;
+	margin-top: 0em;
+	color: white;
 }
 header input[type="text"] {
-    position: absolute;
-    top: 7px;
-    left: 560px;
-    width: 500px;
-    height: 35px;
-    font-size: 17px;
-    background: url('../assets/img/search.png') no-repeat scroll 4px 4px;
-    background-size: 25px;
-    padding-left: 30px;
+	position: absolute;
+	top: 7px;
+	left: 560px;
+	width: 500px;
+	height: 35px;
+	font-size: 17px;
+	background: url('../assets/img/search.png') no-repeat scroll 4px 4px;
+	background-size: 25px;
+	padding-left: 30px;
 }
 header input[type="text"],
 textarea {
-    background-color: f4f4f4;
+	background-color: f4f4f4;
 }
 .up_btn {
-    position: absolute;
-    top: 3px;
-    left: 1200px;
-    border: 2px solid gray;
-    color: gray;
-    background-color: white;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-size: 20px;
-    font-weight: bold;
+	position: absolute;
+	top: 3px;
+	left: 1200px;
+	border: 2px solid gray;
+	color: gray;
+	background-color: white;
+	padding: 8px 20px;
+	border-radius: 8px;
+	font-size: 20px;
+	font-weight: bold;
 }
 
+
 /* body */
+
 #deck {
-    position: absolute;
-    top: 72px;
-    left: 280px;
-    width: calc(100% - 780px);
-    color: #fff;
-    transition: all 0.2s;
+	position: absolute;
+	top: 72px;
+	left: 280px;
+	width: calc(100% - 780px);
+	color: #fff;
+	transition: all 0.2s;
 }
 #card {
-    position: relative;
-    display: block;
-    max-height: 1500px;
-    margin-bottom: 10px;
-    padding: 8px;
-    background-color: #2a2a2e;
-    border: 1px solid #ffffff3f;
-    overflow: hidden;
-    cursor: pointer;
+	position: relative;
+	display: block;
+	max-height: 1500px;
+	margin-bottom: 10px;
+	padding: 8px;
+	background-color: #2a2a2e;
+	border: 1px solid #ffffff3f;
+	overflow: hidden;
+	cursor: pointer;
 }
 #card:hover {
-    border: 1px solid #fff;
-    z-index: 2;
+	border: 1px solid #fff;
+	z-index: 2;
 }
 #card:last-child {
-    margin-bottom: 32px;
+	margin-bottom: 32px;
 }
 #card > .btn {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-image: url(assets/img/spritesheet.png);
-    background-color: #fff;
-    box-shadow: 0 0 5px #000;
-    transform: translateX(-100%);
+	position: absolute;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background-image: url(assets/img/spritesheet.png);
+	background-color: #fff;
+	box-shadow: 0 0 5px #000;
+	transform: translateX(-100%);
 }
 #card > .btn:active {
-    background-color: #9f9f9f;
+	background-color: #9f9f9f;
 }
 #card > #up {
-    left: 100%;
-    background-position: 0 48px;
+	left: 100%;
+	background-position: 0 48px;
 }
 #card > #down {
-    top: 56px;
-    left: 100%;
-    background-position: 96 48;
+	top: 56px;
+	left: 100%;
+	background-position: 96 48;
 }
 #card > #msg {
-    top: 100%;
-    left: 100%;
-    background-position: 48px 0;
-    transform: translate(-100%, -100%);
+	top: 100%;
+	left: 100%;
+	background-position: 48px 0;
+	transform: translate(-100%, -100%);
 }
+
 
 /* Sidebar */
 
 #sidebar {
-    position: absolute;
-    top: 72px;
-    left: 93%;
-    width: 320px;
-    margin-left: -32px;
-    transform: translateX(-100%);
+	position: absolute;
+	top: 72px;
+	left: 93%;
+	width: 320px;
+	margin-left: -32px;
+	transform: translateX(-100%);
 }
 #sidebar > * {
-    display: block;
-    position: relative;
-    background-color: #2a2a2e;
-    margin-bottom: 32px;
-    border: 1px solid #ffffff3f;
+	display: block;
+	position: relative;
+	background-color: #2a2a2e;
+	margin-bottom: 32px;
+	border: 1px solid #ffffff3f;
 }
 #sidebar > *:last-child {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
+
 
 /* Profile & Sign Up View */
 
 #profile > #profilepicture {
-    position: relative;
-    display: block;
-    width: 64px;
-    height: 64px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 16px;
-    margin-bottom: 8px;
-    border-radius: 50%;
+	position: relative;
+	display: block;
+	width: 64px;
+	height: 64px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 16px;
+	margin-bottom: 8px;
+	border-radius: 50%;
 }
 #profile > #profilename {
-    display: block;
-    height: 0;
-    margin-bottom: 64px;
-    text-align: center;
-    font-weight: lighter;
-    font-size: 24px;
+	display: block;
+	height: 0;
+	margin-bottom: 64px;
+	text-align: center;
+	font-weight: lighter;
+	font-size: 24px;
 }
 #profile > .name {
-    position: relative;
-    left: 8px;
-    line-height: 30px;
+	position: relative;
+	left: 8px;
+	line-height: 30px;
 }
 #profile > .btn,
 #signup > .btn {
-    position: relative;
-    display: block;
-    height: 32px;
-    line-height: 32px;
-    margin: 16px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #000;
-    text-align: center;
-    cursor: pointer;
+	position: relative;
+	display: block;
+	height: 32px;
+	line-height: 32px;
+	margin: 16px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	border-radius: 4px;
+	background-color: #fff;
+	color: #000;
+	text-align: center;
+	cursor: pointer;
 }
 #profile > .btn:last-child,
 #signup > .btn:last-child {
-    margin-bottom: 16px;
+	margin-bottom: 16px;
 }
 #profile > .btn:hover {
-    background-color: #9f9f9f;
+	background-color: #9f9f9f;
 }
 #profile > input,
 #signup > input {
-    position: relative;
-    display: block;
-    width: calc(100% - 32px);
-    line-height: 24px;
-    margin: 8px;
-    margin-left: 16px;
-    text-indent: 4px;
+	position: relative;
+	display: block;
+	width: calc(100% - 32px);
+	line-height: 24px;
+	margin: 8px;
+	margin-left: 16px;
+	text-indent: 4px;
 }
 #profile > #username,
 #signup > #regusername {
-    margin-top: 16px;
+	margin-top: 16px;
 }
 #profile > #password,
 #signup > #regconfirm {
-    margin-bottom: 24px;
+	margin-bottom: 24px;
 }
+
 
 /* Card Elements */
 
 #card .header {
-    display: block;
-    top: 0;
-    left: 0;
-    margin-top: 16px;
-    margin-bottom: 16px;
-    font-size: 24px;
-    font-weight: lighter;
+	display: block;
+	top: 0;
+	left: 0;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	font-size: 24px;
+	font-weight: lighter;
 }
 #card .poster {
-    position: absolute;
-    top: 0;
-    left: -4px;
-    color: #fff;
-    font-size: 14px;
-    text-indent: 8px;
+	position: absolute;
+	top: 0;
+	left: -4px;
+	color: #fff;
+	font-size: 14px;
+	text-indent: 8px;
 }
 #card .rep {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    margin-left: -4px;
-    color: #fff;
-    font-size: 14px;
-    font-weight: bold;
-    transform: translateX(-100%);
+	position: absolute;
+	top: 0;
+	left: 100%;
+	margin-left: -4px;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+	transform: translateX(-100%);
 }
 #card img {
-    display: block;
-    margin: auto;
-    max-width: 480px;
+	display: block;
+	margin: auto;
+	max-width: 480px;
 }
+
+
+/* Upload */
+
+#upload > div {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 640px;
+	height: 640px;
+	border-radius: 4px;
+	background-color: #fff;
+}
+
+#upload > div > .btn {
+	display; inline-block;
+	position: absolute;
+	top: calc(100% - 8px);
+	padding: 4px 16px;
+	border-radius: 4px;
+	background-color: #afafaf;
+	color: #000;
+	transform: translateY(-100%);
+	transition: all 0.2s;
+}
+
+#upload > div > .btn:hover {
+	background-color: #7f7f7f;
+}
+
+#upload > div > .btn:active {
+	background-color: #3f3f3f;
+	transition: none;
+}
+
+#upload_post {
+	left: 8px;
+}
+
+#upload_cancel {
+	left: calc(100% - 8px);
+	transform: translate(-100%, -100%) !important;
+}
+
+#upload_caption {
+	position: absolute;
+	top: 0;
+	width: calc(100% - 16px);
+	margin: 8px;
+	padding: 8px;
+	border: none;
+	background-color: #dfdfdf;
+	font-weight: lighter;
+	font-size: 18px;
+	transition: all 0.2s;
+}
+
+#upload_caption:focus {
+	background-color: #afafaf;
+}
+
+#upload_caption:hover {
+	background-color: #afafaf;
+}
+
+#upload_img {
+	position: absolute;
+	top: 56px;
+	left: calc(50% - 8px);
+	max-width: 624px;
+	max-height: 536px;
+	background-color: #dfdfdf;
+	transform: translateX(-50%);
+}
+
+#upload_file {
+	display: none;
+}
+
 
 /* Etcetera */
 
+*[hidden], *[disabled] {
+	pointer-events: none !important;
+}
+
+dim {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	opacity: 0.6;
+}
+
 a:link {
-    color: #fff;
-    text-decoration: none;
+	color: #fff;
+	text-decoration: none;
 }
 a:visited {
-    color: #7a7a7e;
-    text-decoration: none;
+	color: #7a7a7e;
+	text-decoration: none;
 }
 @media screen and (max-width: 1136px) {
-    #deck {
-        position: absolute;
-        left: 50%;
-        width: calc(100% - 64px);
-        max-width: 640px;
-        height: 320px;
-        transform: translateX(-50%);
-    }
-    #sidebar {
-        display: none;
-        pointer-events: none;
-    }
+	#deck {
+		position: absolute;
+		left: 50%;
+		width: calc(100% - 64px);
+		max-width: 640px;
+		height: 320px;
+		transform: translateX(-50%);
+	}
+	#sidebar {
+		display: none;
+		pointer-events: none;
+	}
 }

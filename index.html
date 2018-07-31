@@ -1,32 +1,38 @@
 <html>
 
 <head>
-    <title>LuLgag</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+	<title>LuLgag</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<script src=assets/js/qTiny.js></script>
+	<script src=assets/js/rTiny.js></script>
 </head>
 
 <body>
-      <script src="jq.js"></script>
-    <header>
-        <div class="flexcontainer">
-            <img src="https://i.imgur.com/2EiDBoG.jpg" alt="logo" />
-            <h1>LuLgag</h1>
-            <button class="up_btn">Upload a meme</button>
-            <input type="text" placeholder="search LuLgag..">
-        </div>    
-    </header>
-    <div id=account>
-    </div>
-    <div id=sidebar>
-        <div id=signup>
-            <label class=header>Hello Wowza</label>
-            <a id=acc class=btn href="C:\Users\USER\Desktop\WEBAPDE\MCO1\WEBAPDE-MP-master\MyProfile.html">My Profile</a>
-            <a id=register class=btn href="C:\Users\USER\Desktop\WEBAPDE\MCO1\WEBAPDE-MP-master\index.html">Logout</a>
-        </div>
-    </div>
-    <!--<label class=name><a href="http://www.google.com">Login</a></label>-->
+    <script src="jq.js"></script>
+	<header>
+		<div class="flexcontainer">
+			<img src="https://i.imgur.com/2EiDBoG.jpg" alt="logo" />
+			<h1>LuLgag</h1>
+			<button class="up_btn">Upload a meme</button>
+			<input type="text" placeholder="search LuLgag..">
+		</div>    
+	</header>
+	<div id=sidebar>
+		<div id=profile>
+			<input type=text id=username placeholder=Username>
+			<input type=password id=password placeholder=Password>
+			<a id=login class=btn>Login</a>
+		</div>
+		<div id=signup>
+			<input id=regusername type=text placeholder=Username>
+			<input id=regpassword type=password placeholder=Password>
+			<input id=regconfirm type=password placeholder="Confirm Password">
+			<a id=register class=btn>Register</a>
+		</div>
+	</div>
+	<!--<label class=name><a href="http://www.google.com">Login</a></label>-->
 
-  <div id=deck>
+	 <div id=deck>
         <a id=card href="">
             <label class=poster>Posted by Wowza</label>
             <label class=rep>123</label>
@@ -136,6 +142,6 @@
     </div>
     <script src=index.js></script>
     <script src=modals.js></script>
-    </body>
+</body>
 
 </html>

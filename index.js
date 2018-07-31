@@ -1,96 +1,66 @@
-const e = {
-	profile: q("#profile"),
-	signup: q("#signup"),
-	signup_username: q("#regusername"),
-	signup_password: q("#regpassword"),
-	signup_confirm: q("#regconfirm")
-};
-
-/**
- * A chunk of data. Use constructor.
- * @param String content - Contents of the data in HTML.
- * @param Integer reputation - Post reputation. Upvote increases it,
- * downvote decreases it. The higher the reputation, the more it gets
- * prioritized.
- * @param Array comments - A collection of 'Data' objects.
-**/
-function Data(content, reputation, tags, comments) {
-	// Private.
-	let properties = {
-		content: content || "",
-		reputation: reputation || 0,
-		tags: tags || [],
-		comments: comments || []
-	};
-
-	// Public.
-	this.setContent = v => properties.content = v;
-	this.addReputation = i => properties.reputation += i;
-	this.addTags = v => properties.tags.push(v);
-	this.addComment = v => properties.comments.push(v);
-
-	this.getContent = v => properties.content;
-	this.getReputation = v => properties.reputation;
-	this.getTags = v => Object.assign([], properties.tags);
-	this.getComments = v => Object.assign([], properties.comments);
+e = {
+	login: q("#login")
 }
 
-/**
- * Create a card with the given label.
-**/
-function Card(img, label) {
-	
-}
+function Card(title, src, lnk) {
+	let a = q("!a");
+	a.className = "card";
 
-document.addEventListener("beforeunload", event => {
-	// Get rid of everything if the user doesn't want anything cached.
-	if (!localStorage.lifespan)
-		localStorage.clear();
-});
+	a.setAttribute("href", lnk);
 
+	a.addEventListener("click", event => {
+		event.stopPropagation();
+		event.preventDefault();
 
-// Init
-let login = _ => {
-	let a = q("#profile #username").value.toLowerCase(),
-		b = q("#profile #password").value;
+		info_preview.src = src;
 
-	r({
-		method: "POST",
-		url: "login",
-		data: [a, b]
-	}, _ =>
-		location.reload()
-	);
-};
-
-let keydown = event => (event.keyCode == 13 && login());
-
-q("#profile #username").addEventListener("keydown", keydown);
-q("#profile #password").addEventListener("keydown", keydown);
-q("#profile #login").addEventListener("click", login);
-
-
-// Register.
-
-let register = _ => {
-	let a = e.signup_username.value,
-		b = e.signup_password.value,
-		c = e.signup_confirm.value;
-
-	if (b != c) return;
-
-	r({
-		method: "POST",
-		url: "register",
-		data: [a, b]
-	}, _ => {
-		location.reload()
+		comment.removeAttribute("invisible");
 	});
-};
 
-keydown = event => (event.keyCode == 13 && register());
+	let label = q("!label");
+	label.innerHTML = title;
 
-e.signup_username.addEventListener("keydown", keydown);
-e.signup_password.addEventListener("keydown", keydown);
-e.signup_confirm.addEventListener("keydown", keydown);
-q("#signup #register").addEventListener("click", register);
+	let img = q("!img");
+	img.src = src;
+
+	img.setAttribute("draggable", false);
+
+	a.appendChild(label);
+	a.appendChild(img);
+	deck.appendChild(a);
+}
+
+// Hide window when clicking outside.
+comment.addEventListener("click", event => (
+	event.target == comment && comment.setAttribute("invisible", 1)
+));
+
+{
+	let l = [[
+		"The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.",
+		"https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/34985071_1105616082955769_7177104125023223808_n.jpg?_nc_cat=0&oh=81db92499bfb8089c88ea981f423e714&oe=5BDA23E5"
+	], [
+		"Hello Man",
+		"https://i.redd.it/qk0ke7mci2c11.jpg"
+	], [
+		"Sad Memes",
+		"https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36692128_193090664664977_726496007335968768_n.jpg?_nc_cat=0&oh=5d1d36590a31bcd7e4c2da0d5a207a4a&oe=5BD14E2D"
+	], [
+		"Me",
+		"https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36560238_2391013394276780_5377410659317186560_o.jpg?_nc_cat=0&oh=373f5488be73f631ac3f01f240a2badf&oe=5BA3B607"
+	], [
+		"Coolest PM",
+		"https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36707700_465473153880547_3454880454635683840_n.jpg?_nc_cat=0&oh=ddbd0b917ad1d8a86786dc016b6dc6bf&oe=5BA3051F"
+	], [
+		"Class Contribution",
+		"https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/29244699_202151037046954_5264677942574710784_n.jpg?_nc_cat=0&oh=08ce3252b7d23578afe26994de2c5716&oe=5BA60C85"
+	], [
+		"Younger siblings are slaves",
+		"https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36263191_1775932565834959_7871936907603607552_n.jpg?_nc_cat=0&oh=71e9726c194dc66f5860919f0e85ebc1&oe=5BD2A1F0"
+	]]
+
+	for (let i in l) Card(
+		l[i][0],
+		l[i][1]
+	);
+}

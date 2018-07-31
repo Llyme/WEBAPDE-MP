@@ -1,0 +1,59 @@
+<html>
+
+<head>
+	<title>LuLgag</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<script src=assets/js/qTiny.js></script>
+	<script src=assets/js/rTiny.js></script>
+</head>
+
+<body>
+	<div>
+		<div id=root>
+			<div id=sidebar>
+				<div>
+					<input type=text placeholder=Search>
+					<a href="hot">Hot</a>
+					<a id=sidebar_new href="new">New</a>
+				</div>
+				{{#if username}}
+					<div>
+						Hello, {{nickname}}!
+						<a href=logout>Logout</a>
+					</div>
+				{{else}}
+					<form action=login method=post>
+						<input id=login_uname type=text placeholder=Username name=uname>
+						<input id=login_pword type=password placeholder=Password name=pword>
+						<input id=login align=center type=submit value=Login>
+					</form>
+					<form action=register method=post>
+						<input id=reg_uname type=text placeholder=Username name=uname>
+						<input id=reg_pword type=password placeholder=Password name=pword>
+						<input id=reg_cword type=password placeholder="Confirm Password" name=cword>
+						<input id=register align=center type=submit value=Register>
+					</form>
+				{{/if}}
+				<p id=cpyr>
+					Site Map<br>
+					&copy; 2018 LuLgag All Rights Reserved.
+				</p>
+			</div>
+			<div id=deck></div>
+		</div>
+	</div>
+	<div id=comment invisible>
+		<img id=info_preview src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36707700_465473153880547_3454880454635683840_n.jpg?_nc_cat=0&oh=ddbd0b917ad1d8a86786dc016b6dc6bf&oe=5BA3051F" draggable=false>
+		<div id=info>
+			<textarea placeholder="Comment here."></textarea>
+			<button>Send</button>
+			<div>
+				hello
+			</div>
+		</div>
+		<button class=circle></button>
+	</div>
+	<script src=index.js></script>
+</body>
+
+</html>

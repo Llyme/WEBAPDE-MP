@@ -1,99 +1,284 @@
 body {
 	margin: 0;
-	background-color: #1a1a1e;
+	background-color: #2a2a2e;
 	color: #fff;
+	font-size: 14px;
 	font-family: segoe ui;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+	overflow: hidden;
 }
 
-/* Header */
-.flexcontainer {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
+[invisible] {
+	opacity: 0;
+	pointer-events: none;
 }
-header {
-	height: 60px;
-	background-color: black;
-}
-header img {
+
+body > div {
 	position: absolute;
-	top: 7px;
-	left: 320px;
-	border-radius: 50%;
-	width: 40px;
-	height: 40px;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
 }
-header h1 {
-	position: absolute;
-	top: 3px;
-	left: 370px;
-	padding-right: 10px;
-	margin-top: 0em;
-	color: white;
-}
-header input[type="text"] {
-	position: absolute;
-	top: 7px;
-	left: 560px;
-	width: 500px;
-	height: 35px;
-	font-size: 17px;
-	background: url('../assets/img/search.png') no-repeat scroll 4px 4px;
-	background-size: 25px;
-	padding-left: 30px;
-}
-header input[type="text"],
-textarea {
-	background-color: f4f4f4;
-}
-.up_btn {
-	position: absolute;
-	top: 3px;
-	left: 1200px;
-	border: 2px solid gray;
-	color: gray;
-	background-color: white;
-	padding: 8px 20px;
+
+input,
+button {
+	display: block;
+	padding: 6px 8px;
 	border-radius: 8px;
-	font-size: 20px;
+	font-size: inherit;
+	font-family: inherit;
+}
+
+textarea {
+	padding: 8px;
+	font-size: inherit;
+	font-family: inherit;
+	resize: none;
+}
+
+input[type=submit],
+button {
+	left: 0;
+	right: 0;
+	margin: auto;
+	margin-top: 32px;
+	padding-left: 24px;
+	padding-right: 16px;
+	text-indent: 0;
+	border: none;
+	background-color: #4a4a4e;
+	color: #fff;
+	font-size: 12px;
 	font-weight: bold;
+	transition: all 0.1s;
+}
+
+button {
+	margin-top: 8px;
+	margin-right: 8px;
+	padding-left: 16px;
+}
+
+input[type=submit]:hover,
+button:hover {
+	background-color: #5a5a5e;
+}
+
+input[type=submit]:active,
+button:active {
+	background-color: #2a2a2e;
+	transition: none;
+}
+
+input[type=text],
+input[type=password],
+textarea {
+	display: block;
+	width: calc(100% - 16px);
+	margin-right: 16px;
+	margin-left: 8px;
+	border: none;
+	color: #fff;
+	background: none;
+	border: 1px #4a4a4e solid;
+	box-sizing: border-box;
+	border-radius: 6px;
+	transition: all 0.1s;
+}
+
+input[type=text]:not(:focus):hover,
+input[type=password]:not(:focus):hover,
+textarea:not(:focus):hover {
+	border-color: #2a2a2e;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+textarea:focus {
+	border-color: #2a2a2e;
+	background-color: #2a2a2e;
+}
+
+p {
+	padding: 8px;
+	font-weight: lighter;
+	font-size: inherit;
+}
+
+
+/* Info */
+
+#comment {
+	background-color: #0000009f;
+	transition: opacity 0.2s;
+}
+
+#info {
+	position: relative;
+	top: 16px;
+	left: 0;
+	right: 0;
+	width: 640px;
+	max-width: calc(100% - 32px);
+	margin: auto;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+#info_preview {
+	position: relative;
+	left: 50%;
+	max-width: calc(80% - 32px);
+	margin-top: 16px;
+	box-shadow: 0 0 2px #000;
+	transform: translateX(-50%);
+}
+
+
+/* Sidebar */
+
+#sidebar {
+	position: fixed;
+	top: 0;
+	width: 240px;
+}
+
+#sidebar > * {
+	display: relative;
+	margin-top: 16px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
+}
+
+#sidebar > * * {
+	padding-left: 16px !important;
+}
+
+#sidebar > * *:not(:first-child) {
+	margin-top: 8px;
+}
+
+#sidebar #cpyr {
+	font-weight: lighter;
+	font-size: 12px;
+	text-align: center;
+}
+
+#sidebar a {
+	display: block;
+	font-size: 14px;
+	padding: 8px;
+	border-left-width: 0px;
+	border-left-style: inset;
+	border-left-color: #3f9fff;
+	font-weight: lighter;
+	transition: all 0.2s;
+}
+
+@keyframes tip {
+	30% {
+		text-indent: 16px;
+	}
+
+	100% {
+		transform: none;
+	}
+}
+
+#sidebar a:hover {
+	background-color: #4a4a4e;
+	border-left-width: 8px;
+	animation: tip 0.5s;
+}
+
+a#sidebar_new {
+	border-left-color: #3fff5f;
 }
 
 
 /* body */
 
+#root {
+	position: absolute;
+	top: 16px;
+	left: 0;
+	right: 0;
+	width: calc(640px + 240px + 16px);
+	max-width: 100%;
+	margin: auto;
+}
+
 #deck {
 	position: absolute;
-	top: 72px;
-	left: 280px;
-	width: calc(100% - 780px);
+	right: 0;
+	width: calc(640px - 64px);
+	max-width: calc(100% - 64px - 32px);
+	padding: 32px;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
 	color: #fff;
-	transition: all 0.2s;
 }
-#card {
+
+.card {
 	position: relative;
 	display: block;
-	max-height: 1500px;
-	margin-bottom: 10px;
-	padding: 8px;
-	background-color: #2a2a2e;
-	border: 1px solid #ffffff3f;
-	overflow: hidden;
-	cursor: pointer;
+	margin-bottom: 32px;
+	border-radius: 6px;
 }
-#card:hover {
-	border: 1px solid #fff;
-	z-index: 2;
-}
-#card:last-child {
+
+.card:last-child {
 	margin-bottom: 32px;
 }
-#card > .btn {
+
+.card > label {
+	display: block;
+	margin-bottom: 8px;
+	font-size: 22px;
+	font-weight: lighter;
+	text-align: center;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.card > img {
+	display: block;
+	margin: auto;
+	max-width: 100%;
+	background-color: #2a2a2e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 1s;
+}
+
+.card > img:hover {
+	border-radius: 0;
+	filter: saturate(100%) brightness(120%);
+	transition: none;
+}
+
+.card > img:active {
+	border-radius: 0;
+	filter: saturate(20%) brightness(80%);
+	transition: all 1s;
+}
+
+.card > .btn {
 	position: absolute;
 	width: 48px;
 	height: 48px;
@@ -103,149 +288,27 @@ textarea {
 	box-shadow: 0 0 5px #000;
 	transform: translateX(-100%);
 }
-#card > .btn:active {
+
+.card > .btn:active {
 	background-color: #9f9f9f;
 }
-#card > #up {
+
+.card > #up {
 	left: 100%;
 	background-position: 0 48px;
 }
-#card > #down {
+
+.card > #down {
 	top: 56px;
 	left: 100%;
 	background-position: 96 48;
 }
-#card > #msg {
+
+.card > #msg {
 	top: 100%;
 	left: 100%;
 	background-position: 48px 0;
 	transform: translate(-100%, -100%);
-}
-
-
-/* Sidebar */
-
-#sidebar {
-	position: absolute;
-	top: 72px;
-	left: 93%;
-	width: 320px;
-	margin-left: -32px;
-	transform: translateX(-100%);
-}
-#sidebar > * {
-	display: block;
-	position: relative;
-	background-color: #2a2a2e;
-	margin-bottom: 32px;
-	border: 1px solid #ffffff3f;
-}
-#sidebar > *:last-child {
-	margin-bottom: 0;
-}
-
-
-/* Profile & Sign Up View */
-
-#profile > #profilepicture {
-	position: relative;
-	display: block;
-	width: 64px;
-	height: 64px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 16px;
-	margin-bottom: 8px;
-	border-radius: 50%;
-}
-#profile > #profilename {
-	display: block;
-	height: 0;
-	margin-bottom: 64px;
-	text-align: center;
-	font-weight: lighter;
-	font-size: 24px;
-}
-#profile > .name {
-	position: relative;
-	left: 8px;
-	line-height: 30px;
-}
-#profile > .btn,
-#signup > .btn {
-	position: relative;
-	display: block;
-	height: 32px;
-	line-height: 32px;
-	margin: 16px;
-	margin-top: 8px;
-	margin-bottom: 8px;
-	border-radius: 4px;
-	background-color: #fff;
-	color: #000;
-	text-align: center;
-	cursor: pointer;
-}
-#profile > .btn:last-child,
-#signup > .btn:last-child {
-	margin-bottom: 16px;
-}
-#profile > .btn:hover {
-	background-color: #9f9f9f;
-}
-#profile > input,
-#signup > input {
-	position: relative;
-	display: block;
-	width: calc(100% - 32px);
-	line-height: 24px;
-	margin: 8px;
-	margin-left: 16px;
-	text-indent: 4px;
-}
-#profile > #username,
-#signup > #regusername {
-	margin-top: 16px;
-}
-#profile > #password,
-#signup > #regconfirm {
-	margin-bottom: 24px;
-}
-
-
-/* Card Elements */
-
-#card .header {
-	display: block;
-	top: 0;
-	left: 0;
-	margin-top: 16px;
-	margin-bottom: 16px;
-	font-size: 24px;
-	font-weight: lighter;
-}
-#card .poster {
-	position: absolute;
-	top: 0;
-	left: -4px;
-	color: #fff;
-	font-size: 14px;
-	text-indent: 8px;
-}
-#card .rep {
-	position: absolute;
-	top: 0;
-	left: 100%;
-	margin-left: -4px;
-	color: #fff;
-	font-size: 14px;
-	font-weight: bold;
-	transform: translateX(-100%);
-}
-#card img {
-	display: block;
-	margin: auto;
-	max-width: 480px;
 }
 
 
@@ -350,21 +413,18 @@ a:link {
 	color: #fff;
 	text-decoration: none;
 }
+
 a:visited {
 	color: #7a7a7e;
 	text-decoration: none;
 }
-@media screen and (max-width: 1136px) {
+
+@media screen and (max-width: 932px) {
 	#deck {
-		position: absolute;
-		left: 50%;
-		width: calc(100% - 64px);
-		max-width: 640px;
-		height: 320px;
-		transform: translateX(-50%);
+		left: 0;
+		margin: auto;
 	}
 	#sidebar {
 		display: none;
-		pointer-events: none;
 	}
 }

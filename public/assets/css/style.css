@@ -1,0 +1,726 @@
+body {
+	margin: 0;
+	background-color: #2a2a2e;
+	color: #fff;
+	font-size: 14px;
+	font-family: segoe ui;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+}
+
+body > div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+a:link,
+a:visited {
+	color: #fff;
+	text-decoration: none;
+}
+
+
+/* Button 0; The default button. */
+
+[button] {
+	color: #fff;
+	font-size: inherit;
+	font-family: inherit;
+	cursor: pointer;
+}
+
+[button="0"] {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 6px;
+	box-shadow: 0 0 2px #000;
+	background-color: #4a4a4e;
+	font-size: 12px;
+	font-weight: bold;
+	transition: all 0.1s;
+}
+
+[button="0"]:hover {
+	background-color: #5a5a5e;
+}
+
+[button="0"]:active {
+	background-color: #2a2a2e;
+	transition: none;
+}
+
+
+/* Button 1; The one that bounces when you hover. */
+
+@keyframes bounce {
+	30% {
+		text-indent: 16px;
+	}
+
+	100% {
+		transform: none;
+	}
+}
+
+[button="1"] {
+	display: block;
+	font-size: 14px;
+	padding: 8px;
+	border-left-width: 0px;
+	border-left-style: inset;
+	border-left-color: #3f9fff;
+	font-weight: lighter;
+	transition: all 0.2s;
+}
+
+[button="1"]:hover {
+	background-color: #4a4a4e;
+	border-left-width: 8px;
+	animation: bounce 0.5s;
+}
+
+textarea {
+	padding: 8px;
+	box-shadow: 0 0 2px #000;
+	font-size: inherit;
+	font-family: inherit;
+	resize: none;
+}
+
+input[type=text],
+input[type=password],
+textarea {
+	display: block;
+	width: calc(100% - 16px);
+	margin-right: 8px;
+	margin-left: 8px;
+	padding: 8px 8px;
+	border: none;
+	color: #fff;
+	background: none;
+	border: 1px #4a4a4e solid;
+	box-sizing: border-box;
+	border-radius: 6px;
+	transition: all 0.1s;
+}
+
+input[type=text]:not(:focus):hover,
+input[type=password]:not(:focus):hover,
+textarea:not(:focus):hover {
+	border-color: #2a2a2e;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+textarea:focus {
+	border-color: #2a2a2e;
+	background-color: #2a2a2e;
+}
+
+p {
+	padding: 8px;
+	font-weight: lighter;
+	font-size: inherit;
+}
+
+
+/* upload */
+
+#upload {
+	transition: opacity 0.2s;
+}
+
+#upload > div {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: auto;
+	padding: 16px;
+	width: 100%;
+	max-width: 480px;
+	border-radius: 8px;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	transform: translate(-50%, -50%);
+}
+
+#upload_img {
+	display: block;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 100%;
+	max-width: 480px;
+	cursor: pointer;
+}
+
+#upload_text {
+	display: inline-block;
+	margin: 16px 0;
+	width: 100%;
+	max-width: 480px;
+	font-size: 24px;
+	font-weight: lighter;
+	font-family: inherit;
+	text-align: center;
+}
+
+#upload_submit {
+	position: absolute;
+	display: inline-block;
+	right: 0;
+	margin: auto;
+	margin-right: 16px;
+}
+
+
+/* info */
+
+#info {
+	transition: opacity 0.2s;
+}
+
+#info > div {
+	position: relative;
+	top: 16px;
+	left: 0;
+	right: 0;
+	width: 640px;
+	max-width: calc(100% - 32px);
+	margin: auto;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+#info_preview {
+	position: relative;
+	left: 50%;
+	max-width: calc(80% - 32px);
+	margin-top: 16px;
+	box-shadow: 0 0 2px #000;
+	transform: translateX(-50%);
+}
+
+#info_space div {
+	display: block;
+	padding-top: 8px;
+	padding-left: 32px;
+}
+
+#info_space > div {
+	padding-left: 8px;
+}
+
+#info_space a {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 12px;
+	font-weight: light;
+}
+
+#info_space label {
+	display: inline-block;
+	position: relative;
+	padding: 0 8px;
+	width: calc(100% - 64px);
+	vertical-align: top;
+}
+
+#info_space div > div {
+	border-left: 1px #ffffff3f solid;
+}
+
+#info > div > img {
+	position: absolute;
+	border-radius: 16px;
+	box-shadow: 0 0 2px #000;
+	background-color: #4a4a4e;
+	transition: background-color 0.2s;
+}
+
+#info > div > img:hover {
+	background-color: #5a5a5e;
+}
+
+#info > div > img:active {
+	background-color: #2a2a2e;
+	transition: none;
+}
+
+#info_upvote {
+	left: -40px;
+	top: 0;
+	background-position: 0 0;
+}
+
+#info_downvote {
+	left: -40px;
+	top: 40px;
+	background-position: 64 0;
+}
+
+#info_space > div img {
+	width: 32px;
+	height: 32px;
+	border-radius: 6px;
+}
+
+#info_space > div > img {
+	width: 40px;
+	height: 40px;
+}
+
+#info_space button {
+	margin-top: 8px;
+	padding: 4px 8px;
+	margin-left: 32px;
+	font-size: 10px;
+}
+
+#info_space > button {
+	margin-left: 8px;
+}
+
+#info_rep {
+	display: inline;
+	position: absolute;
+	left: -8px;
+	top: 80px;
+	width: auto;
+	padding: 0;
+	font-weight: lighter;
+	font-size: 16px;
+	transform: translateX(-100%);
+}
+
+#info_send {
+	opacity: 0.4;
+	position: absolute;
+	left: 100%;
+	right: 0;
+	margin-top: 8px;
+	padding: 6px 12px;
+	transform: translate(calc(-100% - 14px), calc(-100% - 14px));
+}
+
+#info_send:hover,
+#info_send:active {
+	opacity: 1;
+}
+
+
+/* Sidebar */
+
+#sidebar {
+	position: fixed;
+	top: 0;
+	width: 240px;
+}
+
+#sidebar > div,
+#sidebar > form {
+	position: relative;
+	margin-top: 16px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
+}
+
+#sidebar > * *:not(:first-child) {
+	margin-top: 8px;
+}
+
+#sidebar #cpyr {
+	font-weight: lighter;
+	font-size: 12px;
+	text-align: center;
+}
+
+#sidebar [green] {
+	border-left-color: #3fff5f;
+}
+
+#sidebar input[type=submit] {
+	display: block;
+	left: 0;
+	right: 0;
+	margin: auto;
+	font-size: 12px;
+	margin-top: 32px;
+	padding: 6px 16px;
+}
+
+#nightmode {
+	position: fixed;
+	top: 8px;
+	left: 8px;
+	border-radius: 16px;
+	background-position: 32px 0;
+	transition: all 0.2s;
+}
+
+#nightmode:hover {
+	background-color: #ffffff7f;
+	box-shadow: 0 0 100px 10px #fff;
+}
+
+#nightmode:active {
+	background-color: #fff;
+	box-shadow: 0 0 50px 10px #fff;
+	transition: all 0.1s;
+}
+
+
+/* account */
+
+#account > * {
+	left: 0;
+	right: 0;
+	margin: auto;
+	display: block;
+	text-align: center;
+}
+
+
+/* body */
+
+#root {
+	position: absolute;
+	top: 16px;
+	left: 0;
+	right: 0;
+	width: calc(640px + 240px + 16px);
+	max-width: 100%;
+	margin: auto;
+}
+
+#deck {
+	position: absolute;
+	right: 0;
+	width: calc(640px - 64px);
+	max-width: calc(100% - 64px - 32px);
+	padding: 32px;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
+	color: #fff;
+}
+
+
+/* card */
+
+.card {
+	position: relative;
+	display: block;
+	margin-bottom: 32px;
+	border-radius: 6px;
+}
+
+.card:last-child {
+	margin-bottom: 32px;
+}
+
+.card > label {
+	display: block;
+	margin-bottom: 8px;
+	font-size: 22px;
+	font-weight: lighter;
+	text-align: center;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.card > img {
+	display: block;
+	margin: auto;
+	max-width: 100%;
+	background-color: #2a2a2e;
+	box-shadow: 0 0 2px #000;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 1s;
+}
+
+.card > img:hover {
+	border-radius: 0;
+	filter: saturate(100%) brightness(120%);
+	transition: none;
+}
+
+.card > img:active {
+	border-radius: 0;
+	filter: saturate(20%) brightness(80%);
+	transition: all 1s;
+}
+
+.card > .btn {
+	position: absolute;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background-image: url(assets/img/spritesheet.png);
+	background-color: #fff;
+	box-shadow: 0 0 5px #000;
+	transform: translateX(-100%);
+}
+
+.card > .btn:active {
+	background-color: #9f9f9f;
+}
+
+.card > #up {
+	left: 100%;
+	background-position: 0 48px;
+}
+
+.card > #down {
+	top: 56px;
+	left: 100%;
+	background-position: 96 48;
+}
+
+.card > #msg {
+	top: 100%;
+	left: 100%;
+	background-position: 48px 0;
+	transform: translate(-100%, -100%);
+}
+
+#card .myImg {
+	display: block;
+	margin: auto;
+	max-width: 480px;
+}
+
+/* Modals */
+/* Style the Image Used to Trigger the Modal */
+.myImg {
+	border-radius: 5px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.myImg:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+	text-align: center;
+	color: #ccc;
+	padding: 10px 0;
+	height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+.modal-content, #caption {
+	-webkit-animation-name: zoom;
+	-webkit-animation-duration: 0.6s;
+	animation-name: zoom;
+	animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+	from {-webkit-transform:scale(0)}
+	to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+	from {transform:scale(0)}
+	to {transform:scale(1)}
+}
+
+/* The Close Button */
+.close {
+	position: absolute;
+	top: 15px;
+	right: 35px;
+	color: #f1f1f1;
+	font-size: 40px;
+	font-weight: bold;
+	transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+	color: #bbb;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px) {
+	.modal-content {
+		width: 100%;
+	}
+
+	#card .myImg {
+		display: block;
+		margin: auto;
+		max-width: 480px;
+	}
+}
+
+/* Modals */
+ /* Style the Image Used to Trigger the Modal */
+.myImg {
+	border-radius: 5px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.myImg:hover {
+	opacity: 0.7;
+}
+
+/* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+	text-align: center;
+	color: #ccc;
+	padding: 10px 0;
+	height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+.modal-content, #caption {
+	-webkit-animation-name: zoom;
+	-webkit-animation-duration: 0.6s;
+	animation-name: zoom;
+	animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+	from {-webkit-transform:scale(0)}
+	to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+	from {transform:scale(0)}
+	to {transform:scale(1)}
+}
+
+/* The Close Button */
+.close {
+	position: absolute;
+	top: 15px;
+	right: 35px;
+	color: #f1f1f1;
+	font-size: 40px;
+	font-weight: bold;
+	transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+	color: #bbb;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+	.modal-content {
+		width: 100%;
+	}
+}
+
+
+/* Etcetera */
+
+[dim] {
+	background-color: #000000cf;
+}
+
+[spritesheet] {
+	background-image: url(../../assets/img/spritesheet.png);
+	width: 32px;
+	height: 32px;
+}
+
+[hidden],
+[disabled] {
+	display: none !important;
+	pointer-events: none !important;
+}
+
+[invisible] {
+	opacity: 0 !important;
+	pointer-events: none !important;
+}
+
+@media screen and (max-width: 932px) {
+	#deck {
+		left: 0;
+		margin: auto;
+	}
+	#sidebar {
+		display: none;
+	}
+}

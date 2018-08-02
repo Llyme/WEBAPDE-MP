@@ -8,30 +8,37 @@
 </head>
 
 <body>
+	{{#if username}}
+		<form id=upload_form action=upload method=post enctype=multipart/form-data hidden>
+			<input id=upload_form_text name=txt type=text>
+			<input id=upload_form_file name=img type=file accept="image/x-png,image/gif,image/jpeg" hidden>
+		</form>
+	{{/if}}
 	<div>
 		<div id=root>
 			<div id=sidebar>
 				<div>
 					<input type=text placeholder=Search>
-					<a href="hot">Hot</a>
-					<a id=sidebar_new href="new">New</a>
+					<a href="hot" button=1>Hot</a>
+					<a href="new" button=1 green>New</a>
 				</div>
 				{{#if username}}
-					<div>
-						Hello, {{nickname}}!
-						<a href=logout>Logout</a>
+					<div id=account>
+						<center>Hello, {{nickname}}!</center>
+						<button id=account_upload button=0>Upload Meme</button>
+						<a href=logout button=0>Logout</a>
 					</div>
 				{{else}}
 					<form action=login method=post>
 						<input id=login_uname type=text placeholder=Username name=uname>
 						<input id=login_pword type=password placeholder=Password name=pword>
-						<input id=login align=center type=submit value=Login>
+						<input id=login align=center type=submit value=Login button=0>
 					</form>
 					<form action=register method=post>
 						<input id=reg_uname type=text placeholder=Username name=uname>
 						<input id=reg_pword type=password placeholder=Password name=pword>
 						<input id=reg_cword type=password placeholder="Confirm Password" name=cword>
-						<input id=register align=center type=submit value=Register>
+						<input id=register align=center type=submit value=Register button=0>
 					</form>
 				{{/if}}
 				<p id=cpyr>
@@ -42,18 +49,84 @@
 			<div id=deck></div>
 		</div>
 	</div>
-	<div id=comment invisible>
-		<img id=info_preview src="https://scontent.fmnl4-2.fna.fbcdn.net/v/t1.0-9/36707700_465473153880547_3454880454635683840_n.jpg?_nc_cat=0&oh=ddbd0b917ad1d8a86786dc016b6dc6bf&oe=5BA3051F" draggable=false>
-		<div id=info>
+	<div id=info invisible dim>
+		<img id=info_preview draggable=false>
+		<div>
+			<img id=info_upvote src=assets/img/blank.png draggable=false spritesheet>
+			<img id=info_downvote src=assets/img/blank.png draggable=false spritesheet>
 			<textarea placeholder="Comment here."></textarea>
-			<button>Send</button>
-			<div>
-				hello
+			<label id=info_rep align=right>0</label>
+			<button id=info_send button=0>Send</button>
+			<div id=info_space>
+				<div>
+					<a>Bob</a>
+					<img src=dat/avatar/0.jpg>
+					<label>
+						The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
+					</label>
+					<div>
+						<a>Charles</a>
+						<img src=dat/avatar/0.jpg>
+						<label>
+							The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
+						</label>
+						<div>
+							<a>Charles</a>
+							<img src=dat/avatar/0.jpg>
+							<label>
+								The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
+							</label>
+						</div>
+						<div>
+							<a>Charles</a>
+							<img src=dat/avatar/0.jpg>
+							<label>
+								The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
+							</label>
+						</div>
+						<button button=0>...</button>
+					</div>
+					<div>
+						<a>Charles</a>
+						<img src=dat/avatar/0.jpg>
+						<label>
+							The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
+						</label>
+						<div>
+							<a>Charles</a>
+							<img src=dat/avatar/0.jpg>
+							<label>
+								The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
+							</label>
+							<button button=0>...</button>
+						</div>
+					</div>
+					<button button=0>...</button>
+				</div>
+				<div>
+					<a>Charles</a>
+					<img src=dat/avatar/0.jpg>
+					<label>
+						The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
+					</label>
+					<button button=0>...</button>
+				</div>
+				<button button=0>...</button>
 			</div>
 		</div>
-		<button class=circle></button>
 	</div>
-	<script src=index.js></script>
+	{{#if username}}
+		<div id=upload dim invisible>
+			<div>
+				<img id=upload_img draggable=false>
+				<input id=upload_text type=text placeholder=Caption>
+				<input id=upload_cancel type=button value=Cancel button="0">
+				<input id=upload_submit type=button value=Submit button="0">
+			</div>
+		</div>
+	{{/if}}
+	<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>
+	<script src=assets/js/index.js></script>
 </body>
 
 </html>

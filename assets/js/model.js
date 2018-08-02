@@ -9,7 +9,11 @@ module.exports = {
 	}),
 	post: mongoose.model("post", {
 		owner: String,
-		img: Buffer,
 		reputation: Number
 	}),
+	comment: mongoose.model("comment", {
+		parent: String,
+		text: String,
+		reputation: Number
+	})
 };

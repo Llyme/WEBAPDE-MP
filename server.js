@@ -1,13 +1,13 @@
 const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const session = require("express-session");
 const bodyparser = require("body-parser");
 const hbs = require("hbs");
 const cookieparser = require("cookie-parser");
 const mongoose = require("mongoose");
+const busboy = require("connect-busboy");
 const model = require("./assets/js/model.js");
-
-console.log(model)
 
 // Setup mongoose.
 
@@ -21,14 +21,14 @@ mongoose.connect("mongodb://localhost:27017/ForTheMemes", {
 // Setup interface.
 
 const app = express();
-app.set("view engine", "hbs");
-
 const urlencoder = bodyparser.urlencoded({
 	extended: false
 });
 
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + "/public"));
 app.use(cookieparser());
+app.use(busboy());
+app.set("view engine", "hbs");
 
 app.use(session({
 	saveUninitialized: true,
@@ -45,6 +45,37 @@ app.get("/", (req, res) => {
 	console.log("GET /");
 
 	res.render("index.hbs", req.session);
+});
+
+app.post("/upload", urlencoder, (req, res) => {
+	console.log("POST /upload")
+
+	let username = req.session.username
+
+	console.log({username})
+	if (username) model.user.findOne({username}).then(doc => {
+		console.log(doc)
+		if (doc) {
+			req.pipe(req.busboy);
+
+			req.busboy.on("file", (fieldname, file, filename) => {
+				console.log("Uploading: " + filename, file.path);
+
+				new model.post({
+					owner: doc._id,
+					reputation: 0
+				}).save().then(doc => {
+					let fstream = fs.createWriteStream(
+						__dirname + "/public/dat/img/" + doc._id
+					);
+
+					file.pipe(fstream);
+					res.render("index.hbs", req.session);
+				})
+			});
+		} else
+			res.render("index.hbs", req.session);
+	});
 });
 
 // Register protocol.
@@ -78,8 +109,6 @@ app.post("/login", urlencoder, (req, res) => {
 		password: req.body.pword
 	}).then(doc => {
 		if (doc) {
-			console.log("B", doc)
-			console.log("A", doc.nickname)
 			req.session.nickname = doc.nickname;
 			req.session.username = req.body.uname;
 		}

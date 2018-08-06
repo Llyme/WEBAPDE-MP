@@ -1,0 +1,370 @@
+const fs = require("fs");
+const path = require("path");
+const express = require("express");
+const session = require("express-session");
+const bodyparser = require("body-parser");
+const hbs = require("hbs");
+const cookieparser = require("cookie-parser");
+const mongoose = require("mongoose");
+const busboy = require("connect-busboy");
+
+const model = require("./assets/js/model.js");
+const bbq = require("./assets/js/bbQueue.js");
+const dbz = require("./assets/js/db-zeal.js");
+const sheepstick = require("./assets/js/sheep-stick.js");
+const hubby = require("./assets/js/hubby.js");
+
+const sorts = ["now", "hot", "new", "sad", "old"];
+
+
+//-- Setup mongoose. --//
+
+mongoose.Promise = global.Promise;
+
+mongoose.connect("mongodb://localhost:27017/ForTheMemes", {
+	useNewUrlParser: true
+});
+
+
+//-- Setup interface. --//
+
+const app = express();
+const urlencoder = bodyparser.urlencoded({
+	extended: false
+});
+
+app.use(express.static(__dirname + "/public"));
+app.use(cookieparser());
+app.use(busboy());
+app.set("view engine", "hbs");
+
+app.use(session({
+	saveUninitialized: true,
+	resave: true,
+	secret: "The big brown fox jumps over the lazy dog.",
+	name: "WEBAPDE 070518",
+	cookie: {
+		maxAge: 1000*60*60*24*7*3
+	}
+}));
+
+
+//-- Setup filters. --//
+
+function post(req, res, id) {
+	res.render("post.hbs", {
+		_id: id
+	});
+}
+
+
+//-- Pipelines. --//
+
+app.use("*", urlencoder, (req, res, next) => {
+	console.log(req.method, req.baseUrl, req.body);
+
+	let url = req.baseUrl.toLowerCase().substr(1);
+
+	if (req.method == "GET" && sorts.indexOf(url) != -1) {
+		req.session.sort = url;
+
+		return res.redirect("/");
+	}
+
+	url = url.split("/");
+
+	if (url[0] == "post") if (req.method == "GET" && url.length == 2)
+		return post(req, res, url[1]);
+	else {
+		url.shift();
+
+		console.log(url.join("/"))
+		res.redirect("/" + url.join("/"));
+	}
+
+	next();
+})
+
+// Main page.
+app.get("/", (req, res) => {
+	req.session.sort = req.session.sort? req.session.sort : "now";
+
+	res.render("index.hbs", req.session);
+});
+
+app.post("/upload", urlencoder, (req, res) => {
+	let username = req.session.username;
+
+	if (username) model.user.findOne({username}).then(doc => {
+		if (doc)
+			bbq(req, [
+				"caption",
+				"image"
+			], data => new model.post({
+				owner: doc._id,
+				caption: data.caption,
+				reputation: 0
+			}).save().then(doc => {
+				let fstream = fs.createWriteStream(
+					__dirname + "/public/dat/img/" + doc._id
+				);
+
+				data.image.pipe(fstream);
+				res.render("index.hbs", req.session);
+			}));
+		else
+			res.render("index.hbs", req.session);
+	});
+});
+
+// Register protocol.
+app.post("/register", urlencoder, (req, res) => {
+	let username = req.body.uname.toLowerCase();
+
+	model.user.findOne({
+		username
+	}).then(doc => (!doc && new model.user({
+		nickname: req.body.uname,
+		username,
+		password: req.body.pword
+	}).save().then(doc => {
+		req.session._id = doc._id;
+		req.session.nickname = req.body.uname;
+		req.session.username = username;
+
+		res.redirect("/");
+	})) || res.redirect("/"));
+});
+
+// Login protocol.
+app.post("/login", urlencoder, (req, res) => {
+	req.body.uname = req.body.uname.toLowerCase();
+
+	model.user.findOne({
+		username: req.body.uname,
+		password: req.body.pword
+	}).then(doc => {
+		if (doc) {
+			console.log(doc)
+			req.session._id = doc._id;
+			req.session.nickname = doc.nickname;
+			req.session.username = req.body.uname;
+		}
+
+		res.redirect("/");
+	});
+});
+
+app.get("/logout", (req, res) => {
+	req.session.destroy();
+	res.redirect("/");
+})
+
+
+// NOTHING TO SEE HERE. JUST AN ATTEMPT TO MAKE A SORTING ALGO.
+// test.sort({reputation: -1}).then(docs => {
+// 	let max = docs[0] ? docs[0].reputation : 0;
+
+// 	console.log("MAX", max);
+
+// 	test.sort({reputation: 1}).then(docs => {
+// 		let min = docs[0] ? docs[0].reputation : 0;
+// 		let ave = (min + max)/2;
+
+// 		console.log("MIN", min);
+// 		console.log("AVE", ave);
+
+// 		model.post.aggregate([
+// 			{$project: {
+// 				reputation: "$reputation",
+// 				caption: "$caption",
+// 				relativity_max: {$add: [max, "$reputation"]}
+// 			}},
+// 			{$project: {
+// 				reputation: "$reputation",
+// 				caption: "$caption",
+// 				relativity: {
+// 					$add: [
+// 						{$multiply: [
+// 							{$divide: [
+// 								min,
+// 								"$relativity_max"
+// 							]},
+// 							"$reputation"
+// 						]},
+// 						{$multiply: [
+// 							{$divide: [
+// 								"$reputation",
+// 								"$relativity_max"
+// 							]},
+// 							min
+// 						]}
+// 					]
+// 				}
+// 			}}
+// 		]).then(docs => {
+// 			console.log(docs)
+// 		})
+// 	})
+// })
+
+// Sort by creation date (_id; ascending).
+app.post("/old", urlencoder, (req, res) => {
+	let skip = Number(req.body.skip);
+
+	model.post.find().sort({
+		_id: 1
+	}).skip(skip).limit(10).then(docs => res.send(
+		docs.length ? JSON.stringify(docs) : "-1"
+	));
+})
+
+// Sort by creation date (_id).
+app.post("/new", urlencoder, (req, res) => {
+	let skip = Number(req.body.skip);
+
+	model.post.find().sort({
+		_id: -1
+	}).skip(skip).limit(10).then(docs => res.send(
+		docs.length ? JSON.stringify(docs) : "-1"
+	));
+})
+
+// Sort by reputation (ascending).
+app.post("/sad", urlencoder, (req, res) => {
+	let skip = Number(req.body.skip);
+
+	model.post.find().sort({
+		reputation: 1,
+		_id: -1
+	}).skip(skip).limit(10).then(docs => res.send(
+		docs.length ? JSON.stringify(docs) : "-1"
+	));
+})
+
+// Sort by reputation.
+app.post("/hot", urlencoder, (req, res) => {
+	let skip = Number(req.body.skip);
+
+	model.post.find().sort({
+		reputation: -1
+	}).skip(skip).limit(10).then(docs => res.send(
+		docs.length ? JSON.stringify(docs) : "-1"
+	));
+})
+
+// Sort by date (without time), then sort by reputation.
+app.post("/now", urlencoder, (req, res) => {
+	let skip = Number(req.body.skip);
+
+	model.post.find().sort({_id: -1}).skip(skip).then(docs => {
+		if (docs.length) {
+			let d = 1000*60*60*24
+			let now = Math.floor(
+				docs[0]._id.getTimestamp().getTime()/d
+			)*d;
+			let then = sheepstick(now+d);
+			now = sheepstick(now);
+
+			model.post.find({
+				_id: {$gte: now, $lt: then}
+			}).sort({
+				reputation: -1,
+				_id: -1
+			}).limit(10).then(docs => res.send(
+				docs.length ? JSON.stringify(docs) : "-1"
+			));
+		} else
+			res.send("-1");
+	})
+});
+
+app.post("/comment", urlencoder, (req, res) => {
+	let skip = Number(req.body.skip);
+
+	model.comment
+	.find({parent: req.body.parent})
+	.sort({reputation: -1, _id: -1})
+	.skip(skip)
+	.limit(10) // 10 should be enough.
+	.then(docs => {
+		if (!docs.length)
+			return res.send("-1");
+
+		let data = {
+			// Users involved in the comment section.
+			users: {},
+			// There's definitely nothing left if it returned less.
+			has_more: docs.length == 10
+		};
+
+		// Collect all comments and check if it has children.
+		dbz(docs, doc => model.comment.findOne({
+			parent: doc._id
+		}), (i, doc) => {return {
+			_id: docs[i]._id,
+			parent: docs[i].parent,
+			owner: docs[i].owner,
+			text: docs[i].text,
+			reputation: docs[i].reputation,
+			has_children: doc ? true : false
+		}}, docs => {
+			data.comments = docs;
+
+			// Collect all users involved with the collected comments.
+			dbz(docs, doc => {
+				if (!data.users[doc.owner])
+					return model.user.findOne({
+						_id: doc.owner
+					});
+			}, (i, doc) => {
+				data.users[doc._id] = {
+					nickname: doc.nickname,
+					username: doc.username
+				};
+			}, _ => {
+				/* There's exactly 10 documents returned. See if
+				   there's more.
+				*/
+				if (data.has_more)
+					model.comment
+					.find({parent: req.body.parent})
+					.skip(skip + 10)
+					.limit(1)
+					.then(doc => {
+						if (!doc)
+							data.has_more = false;
+
+						res.send(JSON.stringify(data));
+					})
+				else
+					res.send(JSON.stringify(data));
+			})
+		});
+	});
+});
+
+// Used to make a 'comment' object. Not to be confused with '/comment'.
+app.post("/reply", urlencoder, (req, res) => {
+	if (req.session._id) {
+		new model.comment({
+			parent: req.body.parent,
+			owner: req.session._id,
+			text: req.body.text
+		}).save().then(doc =>
+			doc &&
+			res.send(JSON.stringify({
+				comment: doc,
+				user: {
+					_id: req.session._id,
+					nickname: req.session.nickname,
+					username: req.session.username
+				}
+			}))
+		);
+	}
+});
+
+app.listen(3000, _ =>
+	console.log("Listening @ localhost:3000")
+);

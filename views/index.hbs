@@ -7,25 +7,32 @@
 	<script src=assets/js/rTiny.js></script>
 </head>
 
-<body>
+<body sort="{{sort}}">
 	{{#if username}}
 		<form id=upload_form action=upload method=post enctype=multipart/form-data hidden>
-			<input id=upload_form_text name=txt type=text>
-			<input id=upload_form_file name=img type=file accept="image/x-png,image/gif,image/jpeg" hidden>
+			<input id=upload_form_text name=caption type=text>
+			<input id=upload_form_tag name=tag type=text>
+			<input id=upload_form_privacy name=privacy type=number>
+			<input id=upload_form_file name=image type=file accept="image/x-png,image/gif,image/jpeg">
 		</form>
 	{{/if}}
-	<div>
+	<div id=main>
 		<div id=root>
 			<div id=sidebar>
+				<img id=logo src=assets\img\logo.jpg>
 				<div>
-					<input type=text placeholder=Search>
-					<a href="hot" button=1>Hot</a>
-					<a href="new" button=1 green>New</a>
+					<input id=sidebar_search type=text placeholder=Search>
+					<a id=now href="now" button=1>Now</a>
+					<a id=hot href="hot" button=1 red>Hot</a>
+					<a id=new href="new" button=1 green>New</a>
+					<a id=sad href="sad" button=1 purple>Sad</a>
+					<a id=old href="old" button=1 orange>Old</a>
 				</div>
 				{{#if username}}
 					<div id=account>
 						<center>Hello, {{nickname}}!</center>
 						<button id=account_upload button=0>Upload Meme</button>
+						<a href="user/user-{{username}}" button=0>My Memes</a>
 						<a href=logout button=0>Logout</a>
 					</div>
 				{{else}}
@@ -52,67 +59,15 @@
 	<div id=info invisible dim>
 		<img id=info_preview draggable=false>
 		<div>
-			<img id=info_upvote src=assets/img/blank.png draggable=false spritesheet>
-			<img id=info_downvote src=assets/img/blank.png draggable=false spritesheet>
-			<textarea placeholder="Comment here."></textarea>
-			<label id=info_rep align=right>0</label>
-			<button id=info_send button=0>Send</button>
-			<div id=info_space>
-				<div>
-					<a>Bob</a>
-					<img src=dat/avatar/0.jpg>
-					<label>
-						The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
-					</label>
-					<div>
-						<a>Charles</a>
-						<img src=dat/avatar/0.jpg>
-						<label>
-							The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
-						</label>
-						<div>
-							<a>Charles</a>
-							<img src=dat/avatar/0.jpg>
-							<label>
-								The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
-							</label>
-						</div>
-						<div>
-							<a>Charles</a>
-							<img src=dat/avatar/0.jpg>
-							<label>
-								The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
-							</label>
-						</div>
-						<button button=0>...</button>
-					</div>
-					<div>
-						<a>Charles</a>
-						<img src=dat/avatar/0.jpg>
-						<label>
-							The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
-						</label>
-						<div>
-							<a>Charles</a>
-							<img src=dat/avatar/0.jpg>
-							<label>
-								The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
-							</label>
-							<button button=0>...</button>
-						</div>
-					</div>
-					<button button=0>...</button>
-				</div>
-				<div>
-					<a>Charles</a>
-					<img src=dat/avatar/0.jpg>
-					<label>
-						The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog. The big brown fox jumps over the lazy dog.
-					</label>
-					<button button=0>...</button>
-				</div>
-				<button button=0>...</button>
-			</div>
+			<label id=info_tag hidden></label>
+			{{#if username}}
+				<img id=info_upvote src=assets/img/blank.png draggable=false spritesheet>
+				<img id=info_downvote src=assets/img/blank.png draggable=false spritesheet>
+				<label id=info_rep align=right>0</label>
+				<textarea id=info_input placeholder="Comment here."></textarea>
+				<button id=info_send class=info_send button=0>Send</button>
+			{{/if}}
+			<div id=info_space></div>
 		</div>
 	</div>
 	{{#if username}}
@@ -120,6 +75,12 @@
 			<div>
 				<img id=upload_img draggable=false>
 				<input id=upload_text type=text placeholder=Caption>
+				<input id=upload_tag type=text placeholder=Tags>
+				<select id=upload_privacy name=privacy>
+					<option value=0 selected>Public</option>
+					<option value=1>Unlisted</option>
+					<option value=2>Private</option>
+				</select>
 				<input id=upload_cancel type=button value=Cancel button="0">
 				<input id=upload_submit type=button value=Submit button="0">
 			</div>

@@ -1,0 +1,29 @@
+<html>
+
+<head>
+	<title>LuLgag</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<script src=assets/js/qTiny.js></script>
+	<script src=assets/js/rTiny.js></script>
+</head>
+
+<body _id={{_id}}>
+	<div id=info>
+		<img id=info_preview src="dat/img/{{_id}}" draggable=false>
+		<div>
+			<label id=info_tag hidden>{{tag}}</label>
+			{{#if username}}
+				<img id=info_upvote src=assets/img/blank.png draggable=false spritesheet>
+				<img id=info_downvote src=assets/img/blank.png draggable=false spritesheet>
+				<label id=info_rep align=right>0</label>
+				<textarea id=info_input placeholder="Comment here."></textarea>
+				<button id=info_send class=info_send button=0>Send</button>
+			{{/if}}
+			<div id=info_space></div>
+		</div>
+	</div>
+	<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>
+	<script src=assets/js/post.js></script>
+</body>
+
+</html>

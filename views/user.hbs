@@ -7,7 +7,7 @@
 	<script src=assets/js/rTiny.js></script>
 </head>
 
-<body view={{view}}>
+<body _id="{{_id}}" view="{{view}}">
 	{{#if username}}
 		<form id=upload_form action=upload method=post enctype=multipart/form-data hidden>
 			<input id=upload_form_text name=caption type=text>
@@ -78,6 +78,14 @@
 				</select>
 				<input id=upload_cancel type=button value=Cancel button="0">
 				<input id=upload_submit type=button value=Submit button="0">
+			</div>
+		</div>
+		<div id=share dim invisible>
+			<div>
+				<label>Share this meme to...</label>
+				<input id=share_text type=text placeholder=Username>
+				<input id=share_cancel type=button value=Cancel button="0">
+				<input id=share_submit type=button value=Submit button="0">
 			</div>
 		</div>
 	{{/if}}

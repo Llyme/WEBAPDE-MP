@@ -8,13 +8,24 @@ const cookieparser = require("cookie-parser");
 const mongoose = require("mongoose");
 const busboy = require("connect-busboy");
 
-const model = require("./assets/js/model.js");
 const bbq = require("./assets/js/bbQueue.js");
 const dbz = require("./assets/js/db-zeal.js");
 const sheepstick = require("./assets/js/sheep-stick.js");
 const hubby = require("./assets/js/hubby.js");
 
+
+//-- Constant indices. --//
+
 const sorts = ["now", "hot", "new", "sad", "old"];
+
+
+//-- Setup models. --//
+
+const model = {};
+
+["comment", "post", "user", "tag"].map(v => {
+	model[v] = require("./models/" + v + ".js");
+});
 
 
 //-- Setup mongoose. --//
@@ -49,15 +60,6 @@ app.use(session({
 }));
 
 
-//-- Setup filters. --//
-
-function post(req, res, id) {
-	res.render("post.hbs", {
-		_id: id
-	});
-}
-
-
 //-- Pipelines. --//
 
 app.use("*", urlencoder, hubby);
@@ -74,38 +76,28 @@ hubby.get(["", "now", "hot", "new", "sad", "old"], (req, res, url) => {
 hubby.get("post/!", (req, res, url) => {
 	if (url[1].substr(0, 5) == "post-") {
 		url[1] = url[1].substr(5);
-
-		let key = {
-			_id: url[1],
-			username: req.session.username
-		};
-		let render = _ => {
-			res.render("post.hbs", key);
-		};
-
-		model.post.findOne({
-			_id: url[1]
-		}).then(doc => {
-			if (doc) {
-				if (doc.tag.length)
-					key.tag = doc.tag = doc.tag.split(" ").map(
-						v => "#" + v
-					).join(" ");
-
-				if (doc.owner == req.session._id ||
-					doc.privacy != 2)
-					render();
-				else model.invite.findOne({
+		dbz.abstract({
+			user: model.user.findOne({
+				_id: req.session._id
+			}),
+			post: model.post.findOne({
+				_id: url[1]
+			})
+		}, docs => {
+			if (docs.post && docs.post.privacy != 2 ||
+				docs.user && (
+					req.session._id == docs.post.owner ||
+					docs.user.shared.indexOf(url[1]) != -1
+				)) {
+				return res.render("post.hbs", {
+					_id: req.session._id,
 					post: url[1],
-					user: req.session._id
-				}).then(doc => {
-					if (doc)
-						render();
-					else
-						res.redirect("/");
-				})
-			} else
-				res.redirect("/");
+					username: req.session.username,
+					owner: req.session._id == docs.post.owner
+				});
+			}
+
+			res.redirect("/");
 		});
 	} else {
 		url.shift();
@@ -153,34 +145,8 @@ hubby.post("user/!", (req, res, url) => {
 	return hubby(req, res);
 });
 
-hubby.post("upload", (req, res) => {
-	let username = req.session.username;
 
-	if (username) model.user.findOne({username}).then(doc => {
-		if (doc)
-			bbq(req, [
-				"caption",
-				"tag",
-				"privacy",
-				"image"
-			], data => new model.post({
-				owner: doc._id,
-				caption: data.caption,
-				tag: data.tag,
-				reputation: 0,
-				privacy: Number(data.privacy)
-			}).save().then(doc => {
-				let fstream = fs.createWriteStream(
-					__dirname + "/public/dat/img/" + doc._id
-				);
-
-				data.image.pipe(fstream);
-				res.redirect("/");
-			}));
-		else
-			res.redirect("/");
-	});
-});
+//-- User entry. --//
 
 // Register protocol.
 hubby.post("register", (req, res) => {
@@ -325,123 +291,251 @@ hubby.post("now", (req, res) => {
 hubby.post("user_view", (req, res) => {
 	let skip = Number(req.body.skip);
 
-	if (req.session._id == req.body.view)
-		model.post.find({
-			owner: req.session._id
-		}).sort({
-			_id: -1,
-			reputation: -1
-		}).skip(skip).limit(10).then(docs =>
-			res.send(docs.length ? JSON.stringify(docs) : "-1")
-		);
-	else
-		model.post.find({
-			owner: req.body.view,
-			privacy: {$ne: 1}
-		}).sort({
-			_id: -1,
-			reputation: -1
-		}).skip(skip).limit(10).then(docs => {
-			if (docs.length)
-				dbz(docs, doc => model.invite.findOne({
-					post: doc._id,
-					user: req.body._id
-				}), (i, doc) => {
-					if (doc || docs[i].privacy == 0)
-						return docs[i];
-				}, docs =>
-					res.send(JSON.stringify(docs))
-				);
-			else
-				res.send("-1");
-		});
+	dbz.abstract({
+		a: model.user.findOne({
+			_id: req.session._id
+		}),
+		b: model.user.findOne({
+			_id: req.body.view
+		})
+	}, user => {
+		if (!user.b || skip >= user.b.posts.length)
+			return res.send("-1");
+
+		if (user.a) {
+			if (req.session._id != req.body.view) {
+				user.b.posts = user.b.posts
+					.filter(x =>
+						x.privacy == 0 ||
+						user.a.shared.find(y => x._id == y) != null
+					);
+
+				if (skip >= user.b.posts.length)
+					return res.send("-1");
+			}
+
+			user.b.posts.sort(
+				(a, b) => a.reputation - b.reputation
+			);
+
+			res.send(user.b.posts.splice(
+				user.b.posts.length - skip - 10,
+				10
+			));
+		} else {
+			user.b.posts = user.b.posts
+				.filter(v => v.privacy == 0);
+
+			if (skip >= user.b.posts.length)
+				return res.send("-1");
+
+			user.b.posts.sort((a, b) => a.reputation - b.reputation);
+
+			res.send(user.b.posts.splice(
+				user.b.posts.length - skip - 10,
+				10
+			));
+		}
+	});
 });
+
+
+//-- Comment retriever. --//
 
 hubby.post("comment", (req, res) => {
 	let skip = Number(req.body.skip);
+	let parent = req.body.post ? "post" :
+		req.body.comment ? "comment" :
+		null;
 
-	model.comment
-	.find({parent: req.body.parent})
-	.sort({reputation: -1, _id: -1})
-	.skip(skip)
-	.limit(10) // 10 should be enough.
-	.then(docs => {
-		if (!docs.length)
-			return res.send("-1");
+	if (!parent)
+		return;
 
-		let data = {
-			// Users involved in the comment section.
-			users: {},
-			// There's definitely nothing left if it returned less.
-			has_more: docs.length == 10
-		};
+	model[parent].findOne({
+		_id: req.body[parent]
+	}).then(parent => {
+		if (parent && skip < parent.comments.length) {
+			parent.comments.sort(
+				(a, b) => a.reputation - b.reputation
+			);
 
-		// Collect all comments and check if it has children.
-		dbz(docs, doc => model.comment.findOne({
-			parent: doc._id
-		}), (i, doc) => {return {
-			_id: docs[i]._id,
-			parent: docs[i].parent,
-			owner: docs[i].owner,
-			text: docs[i].text,
-			reputation: docs[i].reputation,
-			has_children: doc ? true : false
-		}}, docs => {
-			data.comments = docs;
+			let users = {};
+			let comments = parent.comments.splice(
+				parent.comments.length - skip - 10,
+				10
+			);
+			let n = 1;
+			let f = _ => (!n && res.send({
+				users,
+				comments,
+				has_more: parent.comments.length >
+					comments.length + skip
+			}));
 
-			// Collect all users involved with the collected comments.
-			dbz(docs, doc => {
-				if (!data.users[doc.owner])
-					return model.user.findOne({
-						_id: doc.owner
+			comments.map(v => {
+				// Obscure children.
+				n++;
+
+				model.comment.findOne({parent: v._id}).then(doc => {
+					v.comments = doc != null;
+
+					n--;
+					f();
+				});
+
+				if (!users[v.owner]) {
+					users[v.owner] = {};
+					n++;
+
+					model.user.findOne({_id: v.owner}).then(doc => {
+						if (doc) {
+							users[v.owner].nickname = doc.nickname;
+							users[v.owner].username = doc.username;
+						}
+
+						n--;
+						f();
 					});
-			}, (i, doc) => {
-				data.users[doc._id] = {
-					nickname: doc.nickname,
-					username: doc.username
-				};
-			}, _ => {
-				/* There's exactly 10 documents returned. See if
-				   there's more.
-				*/
-				if (data.has_more)
-					model.comment
-					.find({parent: req.body.parent})
-					.skip(skip + 10)
-					.limit(1)
-					.then(doc => {
-						if (!doc)
-							data.has_more = false;
+				}
+			});
 
-						res.send(JSON.stringify(data));
-					})
-				else
-					res.send(JSON.stringify(data));
-			})
-		});
+			n--;
+			f();
+		} else
+			res.send("-1");
+	});
+});
+
+
+//-- Data transfer protocols. --//
+
+hubby.post("upload", (req, res) => {
+	let username = req.session.username;
+
+	if (username) model.user.findOne({
+		username
+	}).then(user => {
+		if (!user)
+			return res.redirect("/");
+
+		bbq(req, [
+			"caption",
+			"tag",
+			"privacy",
+			"image"
+		], data => new model.post({
+			owner: user._id,
+			caption: data.caption,
+			tag: data.tag,
+			reputation: 0,
+			privacy: Number(data.privacy)
+		}).save().then(post => {
+			/* Don't keep the user waiting. Redirect them
+			   immediately while you save the file.
+			*/
+			res.redirect("/");
+
+			let l = data.tag.split(" ");
+
+			for (let i in l)
+				if (l[i].length)
+					model.tag.findOne({
+						text: l[i]
+					}).then(doc => {
+						if (!doc)
+							doc = new model.tag({
+								text: l[i]
+							});
+
+						doc.posts.push(l[i]);
+						doc.save();
+					});
+
+			user.posts.push(post);
+			user.save();
+
+			let fstream = fs.createWriteStream(
+				__dirname + "/public/dat/img/" + post._id
+			);
+
+			data.image.pipe(fstream);
+		}));
 	});
 });
 
 // Used to make a 'comment' object. Not to be confused with '/comment'.
 hubby.post("reply", (req, res) => {
-	if (req.session._id) {
+	let parent = req.body.post ? "post" :
+		req.body.comment ? "comment" :
+		null;
+
+	if (!parent)
+		return;
+
+	dbz.abstract({
+		user: model.user.findOne({
+			_id: req.session._id
+		}),
+		parent: model[parent].findOne({
+			_id: req.body[parent]
+		})
+	}, docs => {
+		if (!docs.user || !docs.parent)
+			return;
+
 		new model.comment({
-			parent: req.body.parent,
+			parent: req.body[parent],
+			post: parent == "post" && req.body[parent] ||
+				docs.parent.post,
 			owner: req.session._id,
 			text: req.body.text
-		}).save().then(doc =>
-			doc &&
-			res.send(JSON.stringify({
-				comment: doc,
+		}).save().then(comment => {
+			if (!comment)
+				return;
+
+			res.send({
+				comment,
 				user: {
 					_id: req.session._id,
 					nickname: req.session.nickname,
 					username: req.session.username
 				}
-			}))
-		);
-	}
+			});
+
+			docs.parent.comments.push(comment);
+			docs.parent.save();
+		});
+	});
 });
+
+
+//-- Miscellaneous. --//
+
+hubby.post("share", (req, res) => {
+	dbz.abstract({
+		user0: model.user.findOne({
+			_id: req.session._id
+		}),
+		user1: model.user.findOne({
+			username: req.body.username
+		})
+	}, docs => {
+		if (!docs.user0 ||
+			!docs.user1 ||
+			docs.user1.shared.indexOf(req.body.post) != -1)
+			return;
+
+		let post = docs.user0.posts.find(v => v._id == req.body.post);
+
+		if (post) {
+			docs.user1.shared.push(req.body.post);
+			docs.user1.save();
+		}
+	});
+});
+
+
+//-- Melee initialization. --//
 
 app.listen(3000, _ =>
 	console.log("Listening @ localhost:3000")

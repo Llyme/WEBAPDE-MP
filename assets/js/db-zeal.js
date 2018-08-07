@@ -23,3 +23,38 @@ module.exports = (docs, parse, filter, callback) => {
 			n--;
 	}
 };
+
+/**
+ * Even more flexible stepper.
+**/
+module.exports.abstract = (queries, callback) => {
+	let n = Object.keys(queries).length;
+	let docs = {};
+
+	for (let k in queries) queries[k].then(v => {
+		docs[k] = v;
+		n--;
+
+		if (n == 0) {
+			n = -1; // Debouncing.
+
+			callback(docs);
+		}
+	});
+};
+
+module.exports.constant = (_ids, query, callback) => {
+	let n = _ids.length;
+	let docs = [];
+
+	for (let i = 0; i < _ids.length; i++) query(_ids[i]).then(v => {
+		docs[i] = v;
+		n--;
+
+		if (n == 0) {
+			n = -1; // Debouncing.
+
+			callback(docs);
+		}
+	});
+};

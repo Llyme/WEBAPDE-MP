@@ -1,9 +1,11 @@
 let _id = document.body.getAttribute("_id");
+let post = document.body.getAttribute("post");
 let logged_in = q("#info_send") != null;
 // Used to see which comment to reply on.
 let comment_selected;
 
 document.body.removeAttribute("_id");
+document.body.removeAttribute("post");
 
 
 //-- The text input when the user wants to reply to someone. --//
@@ -23,7 +25,7 @@ comment_field[1].setAttribute("button", 0);
 
 function Comment(elm, doc, user) {
 	let child;
-	let url = "/user/" + user.username;
+	let url = "/user/user-" + user.username;
 
 	let div = q("!div");
 	div.innerHTML = "<a href=\"" + url + "\">" +
@@ -78,7 +80,7 @@ function Comment(elm, doc, user) {
 		}
 	}
 
-	if (doc.has_children) {
+	if (doc.comments[0] || doc.comments == true) {
 		child = q("!div");
 		child.className = "comment_children";
 
@@ -87,7 +89,7 @@ function Comment(elm, doc, user) {
 		button.setAttribute("button", 0);
 		button.addEventListener("click", _ => {
 			child.removeChild(button);
-			load_comment(child, doc._id, 0);
+			load_comment(child, doc._id, 0, true);
 		});
 
 		div.appendChild(child).appendChild(button);
@@ -101,15 +103,19 @@ function Comment(elm, doc, user) {
 
 //-- Request generators. --//
 
-function load_comment(elm, parent, skip) {
+function load_comment(elm, parent, skip, is_comment) {
+	let data = {skip};
+
+	if (is_comment)
+		data.comment = parent;
+	else
+		data.post = parent;
+
 	r({
 		method: "post",
 		url: "comment",
 		headervalue: "application/x-www-form-urlencoded",
-		data: {
-			parent,
-			skip
-		}
+		data
 	}, docs => {
 		if (docs != "-1") try {
 			docs = JSON.parse(docs);
@@ -129,7 +135,8 @@ function load_comment(elm, parent, skip) {
 					load_comment(
 						elm,
 						parent,
-						skip + docs.comments.length
+						skip + docs.comments.length,
+						is_comment
 					);
 				});
 
@@ -143,6 +150,8 @@ function load_comment(elm, parent, skip) {
 //-- Setup function for commenting. --//
 
 if (logged_in) {
+	//-- Upload Functions. --//
+
 	q("#info_send").addEventListener("click", _ => {
 		let info_input = q("#info_input");
 
@@ -151,7 +160,7 @@ if (logged_in) {
 			url: "reply",
 			headervalue: "application/x-www-form-urlencoded",
 			data: {
-				parent: post_selected,
+				post: _id,
 				text: info_input.value
 			}
 		}, doc => { try {
@@ -175,7 +184,7 @@ if (logged_in) {
 			url: "reply",
 			headervalue: "application/x-www-form-urlencoded",
 			data: {
-				parent: comment_selected[1],
+				comment: comment_selected[1],
 				text: comment_field[0].value
 			}
 		}, doc => { try {
@@ -186,6 +195,36 @@ if (logged_in) {
 
 		comment_field[0].value = "";
 	});
+
+
+	//-- Share Functions. --//
+
+	q("#info_share").addEventListener("click", _ =>
+		q("#share").removeAttribute("invisible", 1)
+	);
+
+	q("#share_submit").addEventListener("click", _ => {
+		r({
+			method: "post",
+			url: "share",
+			headervalue: "application/x-www-form-urlencoded",
+			data: {
+				post: post_selected,
+				username: q("#share_text").value.toLowerCase()
+			}
+		});
+
+		q("#share").setAttribute("invisible", 1);
+	});
+
+	q("#share_cancel").addEventListener("click", _ => {
+		q("#share").setAttribute("invisible", 1);
+	});
+
+	q("#share").addEventListener("click", event =>
+		event.target == q("#share") &&
+		q("#share").setAttribute("invisible", 1)
+	);
 }
 
 

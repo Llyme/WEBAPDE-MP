@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const post = require("./post.js");
 
 let Schema = new mongoose.Schema({
 	text: {
@@ -6,7 +7,7 @@ let Schema = new mongoose.Schema({
 		required: true,
 		default: ""
 	},
-	posts: [String]
+	posts: [post.Schema]
 });
 
 let Model = mongoose.model("tag", Schema);

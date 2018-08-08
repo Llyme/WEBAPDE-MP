@@ -1,7 +1,7 @@
 /**
- * Asynchronous stepper for mongodb.
+ * Asynchronously parse documents with different queries, then
+ * filter the results.
 **/
-
 module.exports = (docs, parse, filter, callback) => {
 	let data = [];
 	let n = docs.length;
@@ -25,7 +25,7 @@ module.exports = (docs, parse, filter, callback) => {
 };
 
 /**
- * Even more flexible stepper.
+ * Asynchronously parse documents with different queries.
 **/
 module.exports.abstract = (queries, callback) => {
 	let n = Object.keys(queries).length;
@@ -43,6 +43,9 @@ module.exports.abstract = (queries, callback) => {
 	});
 };
 
+/**
+ * Asynchronously parse documents with 1 query.
+**/
 module.exports.constant = (_ids, query, callback) => {
 	let n = _ids.length;
 	let docs = [];

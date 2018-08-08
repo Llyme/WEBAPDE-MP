@@ -12,7 +12,7 @@ const bbq = require("./assets/js/bbQueue.js");
 const dbz = require("./assets/js/db-zeal.js");
 const sheepstick = require("./assets/js/sheep-stick.js");
 const hubby = require("./assets/js/hubby.js");
-
+const sap = require("./assets/js/sort-a-potty.js");
 
 //-- Constant indices. --//
 
@@ -193,99 +193,133 @@ hubby.get("logout", (req, res) => {
 
 //-- Sorting Section. --//
 
-function sort_key_gen(req) {
-	let key = {
-		$or: [
-			{privacy: 0},
-			{owner: req.session._id}
-		]
-	};
-
-	if (req.body.tag && req.body.tag.length)
-		key.$and = req.body.tag.split(" ").map(
-			v => { return {tag: {$regex: v}}; }
-		);
-
-	return key;
-}
-
-// Sort by creation date (_id; ascending).
-hubby.post("old", (req, res) => {
-	let key = sort_key_gen(req);
+hubby.post(["old", "new", "sad", "hot", "now"], (req, res, url) => {
+	let query = {$or: [
+		{privacy: 0},
+		{owner: req.session._id}
+	]};
 	let skip = Number(req.body.skip);
 
-	model.post.find(key).sort({
-		_id: 1
-	}).skip(skip).limit(10).then(docs => res.send(
-		docs.length ? JSON.stringify(docs) : "-1"
-	));
-})
+	if (req.body.tag &&
+		/\S/.test(req.body.tag)) {
+		let posts = [];
+		let debounce = {};
+		let l = req.body.tag.toLowerCase().split(" ");
+		let n = 1;
+		let f = _ => {
+			if (!n) {
+				posts = posts.splice(skip, 10);
 
-// Sort by creation date (_id).
-hubby.post("new", (req, res) => {
-	let key = sort_key_gen(req);
-	let skip = Number(req.body.skip);
+				res.send(posts.length ? posts : "-1");
+			}
+		};
 
-	model.post.find(key).sort({
-		_id: -1
-	}).skip(skip).limit(10).then(docs => res.send(
-		docs.length ? JSON.stringify(docs) : "-1"
-	));
-})
+		for (let x in l) if (l[x]) {
+			n++;
 
-// Sort by reputation (ascending).
-hubby.post("sad", (req, res) => {
-	let key = sort_key_gen(req);
-	let skip = Number(req.body.skip);
+			model.tag.findOne({
+				text: l[x]
+			}).then(doc => {
+				if (doc) {
+					for (let i = 0; i < doc.posts.length; i++) {
+						let v = doc.posts[i];
+						let pass = 1;
 
-	model.post.find(key).sort({
-		reputation: 1,
-		_id: -1
-	}).skip(skip).limit(10).then(docs => res.send(
-		docs.length ? JSON.stringify(docs) : "-1"
-	));
-})
+						if (!debounce[v._id]) {
+							debounce[v._id] = 1;
 
-// Sort by reputation.
-hubby.post("hot", (req, res) => {
-	let key = sort_key_gen(req);
-	let skip = Number(req.body.skip);
+							for (let y in l)
+								if (v.tag.indexOf(l[y]) == -1) {
+									pass = 0;
 
-	model.post.find(key).sort({
-		reputation: -1,
-		_id: -1
-	}).skip(skip).limit(10).then(docs => res.send(
-		docs.length ? JSON.stringify(docs) : "-1"
-	));
-})
+									break;
+								}
 
-// Sort by date (without time), then sort by reputation.
-hubby.post("now", (req, res) => {
-	let key = sort_key_gen(req);
-	let skip = Number(req.body.skip);
+							if (pass) sap.insert.binary(
+								posts,
+								doc.posts[i],
+								v => v.reputation,
+								true
+							);
+						}
+					}
+				}
 
-	model.post.find(key).sort({
-		_id: -1
-	}).skip(skip).then(docs => {
-		if (docs.length) {
-			let d = 1000*60*60*24;
-			let now = Math.floor(
-				docs[0]._id.getTimestamp().getTime()/d
-			)*d;
-			let then = sheepstick(now+d);
-			now = sheepstick(now);
+				n--;
+				f();
+			});
+		}
 
-			key._id = {$gte: now, $lt: then};
+		n--;
+		f();
+	} else switch(url[0]) {
+		case "old":
+			// Sort by creation date (_id; ascending).
+			model.post.find(query).sort({
+				_id: 1
+			}).skip(skip).limit(10).then(docs => res.send(
+				docs.length ? docs : "-1"
+			));
 
-			model.post.find(key).sort({
+			break;
+
+		case "new":
+			// Sort by creation date (_id).
+			model.post.find(query).sort({
+				_id: -1
+			}).skip(skip).limit(10).then(docs => res.send(
+				docs.length ? docs : "-1"
+			));
+
+			break;
+
+		case "sad":
+			// Sort by reputation (ascending).
+			model.post.find(query).sort({
+				reputation: 1,
+				_id: -1
+			}).skip(skip).limit(10).then(docs => res.send(
+				docs.length ? docs : "-1"
+			));
+
+			break;
+
+		case "hot":
+			// Sort by reputation.
+			model.post.find(query).sort({
 				reputation: -1,
 				_id: -1
-			}).limit(10).then(docs => res.send(
-				docs.length ? JSON.stringify(docs) : "-1"
+			}).skip(skip).limit(10).then(docs => res.send(
+				docs.length ? docs : "-1"
 			));
-		} else
-			res.send("-1");
-	})
+
+			break;
+
+		default:
+			// Sort by date (without time), then sort by reputation.
+			model.post.find(query).sort({
+				_id: -1
+			}).skip(skip).then(docs => {
+				if (docs.length) {
+					let d = 1000*60*60*24;
+					let now = Math.floor(
+						docs[0]._id.getTimestamp().getTime()/d
+					)*d;
+					let then = sheepstick(now+d);
+					now = sheepstick(now);
+
+					query._id = {$gte: now, $lt: then};
+
+					model.post.find(query).sort({
+						reputation: -1,
+						_id: -1
+					}).limit(10).then(docs => res.send(
+						docs.length ? docs : "-1"
+					));
+				} else
+					res.send("-1");
+			});
+	}
 });
 
 hubby.post("user_view", (req, res) => {
@@ -355,9 +389,11 @@ hubby.post("comment", (req, res) => {
 		_id: req.body[parent]
 	}).then(parent => {
 		if (parent && skip < parent.comments.length) {
-			parent.comments.sort(
-				(a, b) => a.reputation - b.reputation
-			);
+			// Only sort the first layer.
+			if (parent == "post")
+				parent.comments.sort(
+					(a, b) => a.reputation - b.reputation
+				);
 
 			let users = {};
 			let comments = parent.comments.splice(
@@ -430,15 +466,10 @@ hubby.post("upload", (req, res) => {
 			reputation: 0,
 			privacy: Number(data.privacy)
 		}).save().then(post => {
-			/* Don't keep the user waiting. Redirect them
-			   immediately while you save the file.
-			*/
-			res.redirect("/");
-
-			let l = data.tag.split(" ");
+			let l = data.tag.toLowerCase().split(" ");
 
 			for (let i in l)
-				if (l[i].length)
+				if (l[i].length) {
 					model.tag.findOne({
 						text: l[i]
 					}).then(doc => {
@@ -447,9 +478,10 @@ hubby.post("upload", (req, res) => {
 								text: l[i]
 							});
 
-						doc.posts.push(l[i]);
+						doc.posts.push(post);
 						doc.save();
 					});
+				}
 
 			user.posts.push(post);
 			user.save();
@@ -459,6 +491,8 @@ hubby.post("upload", (req, res) => {
 			);
 
 			data.image.pipe(fstream);
+
+			res.redirect("/");
 		}));
 	});
 });
@@ -493,6 +527,29 @@ hubby.post("reply", (req, res) => {
 			if (!comment)
 				return;
 
+			// Update the parent's subdocuments.
+			docs.parent.comments.push(comment);
+			docs.parent.save();
+
+			// Update the tags' subdocuments.
+			// if (parent == "post") {
+			// 	let l = docs.parent.tag.toLowerCase().split(" ");
+
+			// 	for (let x in l) if (l[x]) {
+			// 		model.tag.findOne({
+			// 			text: l[x]
+			// 		}).then(tag => {
+			// 			for (let y in tag.posts)
+			// 				if (tag.posts[y]._id == req.body[parent]) {
+			// 					tag.posts[y].comments.push(comment);
+			// 					tag.posts[y].comments.save();
+
+			// 					break;
+			// 				}
+			// 		});
+			// 	}
+			// }
+
 			res.send({
 				comment,
 				user: {
@@ -501,9 +558,6 @@ hubby.post("reply", (req, res) => {
 					username: req.session.username
 				}
 			});
-
-			docs.parent.comments.push(comment);
-			docs.parent.save();
 		});
 	});
 });

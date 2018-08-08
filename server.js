@@ -7,6 +7,7 @@ const hbs = require("hbs");
 const cookieparser = require("cookie-parser");
 const mongoose = require("mongoose");
 const busboy = require("connect-busboy");
+const crypt = require("crypto");
 
 const bbq = require("./assets/js/bbQueue.js");
 const dbz = require("./assets/js/db-zeal.js");
@@ -161,7 +162,7 @@ hubby.post("register", (req, res) => {
 	}).then(doc => (!doc && new model.user({
 		nickname: req.body.uname,
 		username,
-		password: req.body.pword
+		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
 	}).save().then(doc => {
 		req.session._id = doc._id;
 		req.session.nickname = req.body.uname;
@@ -177,7 +178,7 @@ hubby.post("login", (req, res) => {
 
 	model.user.findOne({
 		username: req.body.uname,
-		password: req.body.pword
+		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
 	}).then(doc => {
 		if (doc) {
 			req.session._id = doc._id;

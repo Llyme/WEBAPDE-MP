@@ -1,11 +1,4 @@
-let _id = document.body.getAttribute("_id");
-let post = document.body.getAttribute("post");
-let logged_in = q("#info_send") != null;
-// Used to see which comment to reply on.
 let comment_selected;
-
-document.body.removeAttribute("_id");
-document.body.removeAttribute("post");
 
 
 //-- The text input when the user wants to reply to someone. --//
@@ -25,7 +18,7 @@ comment_field[1].setAttribute("button", 0);
 
 function Comment(elm, doc, user) {
 	let child;
-	let url = "/user/user-" + user.username;
+	let url = "/user-" + user.username;
 
 	let div = q("!div");
 	div.innerHTML = "<a href=\"" + url + "\">" +
@@ -39,7 +32,7 @@ function Comment(elm, doc, user) {
 
 	div.innerHTML += "<label>" + doc.text + "</label>";
 
-	if (logged_in) {
+	if (junksan._id) {
 		let button = q("!button");
 		button.innerHTML = "reply";
 		button.setAttribute("button", 0);
@@ -149,7 +142,7 @@ function load_comment(elm, parent, skip, is_comment) {
 
 //-- Setup function for commenting. --//
 
-if (logged_in) {
+if (junksan._id) {
 	//-- Upload Functions. --//
 
 	q("#info_send").addEventListener("click", _ => {
@@ -230,7 +223,5 @@ if (logged_in) {
 
 //-- Melee Initialization. --//
 
-load_comment(info_space, _id, 0);
-
-if (q("#info_tag").innerHTML.length)
-	q("#info_tag").removeAttribute("hidden");
+if (junksan.has_comments)
+	load_comment(info_space, junksan.post, 0);

@@ -7,7 +7,11 @@
 	<script src=assets/js/rTiny.js></script>
 </head>
 
-<body _id="{{_id}}" sort="{{sort}}">
+<body>
+	<dump
+		_id="{{_id}}"
+		sort="{{sort}}"
+	></dump>
 	{{#if username}}
 		<form id=upload_form action=upload method=post enctype=multipart/form-data hidden>
 			<input id=upload_form_text name=caption type=text>
@@ -32,7 +36,7 @@
 					<div id=account>
 						<center>Hello, {{nickname}}!</center>
 						<button id=account_upload button=0>Upload Meme</button>
-						<a href="user/user-{{username}}" button=0>My Memes</a>
+						<a href="user-{{username}}" button=0>My Memes</a>
 						<a href=logout button=0>Logout</a>
 					</div>
 				{{else}}
@@ -58,7 +62,7 @@
 	</div>
 	<div id=info invisible dim>
 		<img id=info_preview draggable=false>
-		<div>
+		<div hidden>
 			<label id=info_tag hidden></label>
 			{{#if username}}
 				<img id=info_upvote src=assets/img/blank.png draggable=false spritesheet>
@@ -88,7 +92,7 @@
 		</div>
 		<div id=share dim invisible>
 			<div>
-				<label>Share this meme to...</label>
+				<label>Share</label>
 				<input id=share_text type=text placeholder=Username>
 				<input id=share_cancel type=button value=Cancel button="0">
 				<input id=share_submit type=button value=Submit button="0">
@@ -96,6 +100,7 @@
 		</div>
 	{{/if}}
 	<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>
+	<script src=assets/js/junk-san.js></script>
 	<script src=assets/js/index.js></script>
 </body>
 

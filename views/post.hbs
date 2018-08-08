@@ -7,25 +7,33 @@
 	<script src=assets/js/rTiny.js></script>
 </head>
 
-<body _id="{{_id}}" post="{{post}}">
+<body>
+	<dump
+		_id="{{_id}}"
+		post="{{post}}"
+		has_comments="{{has_comments}}"
+	></dump>
 	<div id=info>
 		<img id=info_preview src="dat/img/{{post}}" draggable=false>
-		<div>
-			<label id=info_tag hidden>{{tag}}</label>
-
-			{{#if _id}}
-				<img id=info_upvote src=assets/img/blank.png draggable=false spritesheet>
-				<img id=info_downvote src=assets/img/blank.png draggable=false spritesheet>
-				{{#if owner}}
-					<img id=info_share src=assets/img/blank.png draggable=false spritesheet>
+		{{#if show}}
+			<div>
+				{{#if tag}}
+					<label id=info_tag>{{tag}}</label>
 				{{/if}}
-				<label id=info_rep align=right>0</label>
-				<textarea id=info_input placeholder="Comment here."></textarea>
-				<button id=info_send class=info_send button=0>Send</button>
-			{{/if}}
-			<div id=info_space></div>
-		</div>
-	</div>
+				{{#if _id}}
+					<img id=info_upvote src=assets/img/blank.png draggable=false spritesheet>
+					<img id=info_downvote src=assets/img/blank.png draggable=false spritesheet>
+					{{#if owner}}
+						<img id=info_share src=assets/img/blank.png draggable=false spritesheet>
+					{{/if}}
+					<label id=info_rep align=right>0</label>
+					<textarea id=info_input placeholder="Comment here."></textarea>
+					<button id=info_send class=info_send button=0>Send</button>
+				{{/if}}
+				<div id=info_space></div>
+			</div>
+		{{/if}}
+</div>
 	{{#if username}}
 		<div id=share dim invisible>
 			<div>
@@ -37,6 +45,7 @@
 		</div>
 	{{/if}}
 	<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>
+	<script src=assets/js/junk-san.js></script>
 	<script src=assets/js/post.js></script>
 </body>
 

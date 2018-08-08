@@ -64,85 +64,89 @@ app.use(session({
 
 app.use("*", urlencoder, hubby);
 
-hubby.get(["", "now", "hot", "new", "sad", "old"], (req, res, url) => {
-	req.session.sort = url[0] || "now";
-
-	res.render("index.hbs", req.session);
-})
-
 /**
- * Capture everything in the `/post` route.
+ * Pages.
 **/
-hubby.get("post/!", (req, res, url) => {
-	if (url[1].substr(0, 5) == "post-") {
-		url[1] = url[1].substr(5);
-		dbz.abstract({
-			user: model.user.findOne({
-				_id: req.session._id
-			}),
-			post: model.post.findOne({
-				_id: url[1]
-			})
-		}, docs => {
-			if (docs.post && docs.post.privacy != 2 ||
-				docs.user && (
-					req.session._id == docs.post.owner ||
-					docs.user.shared.indexOf(url[1]) != -1
-				)) {
-				return res.render("post.hbs", {
-					_id: req.session._id,
-					post: url[1],
-					username: req.session.username,
-					owner: req.session._id == docs.post.owner
-				});
-			}
+hubby.get("*", (req, res, url) => {
+	if (!url[0] || sorts.indexOf(url[0]) != -1) {
+		//-- Home page. --//
 
-			res.redirect("/");
-		});
+		req.session.sort = url[0] || "now";
+
+		res.render("index.hbs", req.session);
+
+		// Return 1 to tell 'hubby' that we can handle it from here.
+		return 1;
 	} else {
-		url.shift();
-		res.redirect("/" + url.join("/"));
+		let prefix = url[0].substr(0, 5);
+
+		if (prefix == "user-") {
+			//-- User profile page. --//
+
+			model.user.findOne({
+				username: url[0].substr(5)
+			}).then(doc => {
+				if (doc) res.render("user.hbs", {
+					view: doc._id,
+					_id: req.session._id,
+					nickname: req.session.nickname,
+					username: req.session.username
+				}); else
+					// Nothing found. Go back to home page.
+					res.redirect("/");
+			});
+
+			/* Return 1 to tell 'hubby' that we can handle it from
+			   here.
+			*/
+			return 1;
+		} else if (prefix == "post-") {
+			//-- Post page. --//
+
+			url[0] = url[0].substr(5);
+
+			dbz.abstract({
+				user: model.user.findOne({
+					_id: req.session._id
+				}),
+				post: model.post.findOne({
+					_id: url[0]
+				})
+			}, docs => {
+				if (docs.post && docs.post.privacy != 2 ||
+					docs.user && (
+						req.session._id == docs.post.owner ||
+						docs.user.shared.indexOf(url[0]) != -1
+					)) {
+					let tag = docs.post.tag
+						.split(" ")
+						.filter(v => v)
+						.map(v => "#" + v)
+						.join(" ") || null;
+					let has_comments = docs.post.comments.length > 0;
+					let _id = req.session._id;
+
+					res.render("post.hbs", {
+						post: url[0],
+						owner: req.session._id == docs.post.owner,
+						tag,
+						// Used if the script needs to post request.
+						has_comments,
+						// If we should show the comment section.
+						show: !!(tag || has_comments || _id),
+						_id,
+						username: req.session.username
+					});
+				} else
+					res.redirect("/");
+			});
+
+			/* Return 1 to tell 'hubby' that we can handle it from
+			   here.
+			*/
+			return 1;
+		}
 	}
-});
-
-/**
- * Redirect all incoming post requests from `/post`.
-**/
-hubby.post("post/!", (req, res, url) => {
-	url.shift();
-
-	req.baseUrl = "/" + url.join("/");
-
-	return hubby(req, res);
-});
-
-hubby.get("user/!", (req, res, url) => {
-	if (url[1].substr(0, 5) == "user-")
-		model.user.findOne({
-			username: url[1].substr(5)
-		}).then(doc => {
-			if (doc) res.render("user.hbs", {
-				view: doc._id,
-				nickname: req.session.nickname,
-				username: req.session.username
-			}); else
-				res.redirect("/");
-		});
-	else {
-		url.shift();
-		res.redirect("/" + url.join("/"));
-	}
-});
-
-/**
- * Redirect all incoming post requests from `/user`.
-**/
-hubby.post("user/!", (req, res, url) => {
-	url.shift();
-
-	req.baseUrl = "/" + url.join("/");
-
-	return hubby(req, res);
 });
 
 

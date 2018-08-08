@@ -200,7 +200,8 @@ p {
 	border-radius: 8px;
 	background-color: #3a3a3e;
 	box-shadow: 0 0 2px #000;
-	overflow-y: auto;
+	overflow: auto;
+	overflow-x: hidden;
 	transform: translate(-50%, -50%);
 }
 
@@ -274,6 +275,7 @@ p {
 	max-width: calc(80% - 32px);
 	margin-top: 16px;
 	transform: translateX(-50%);
+	pointer-events: none;
 }
 
 #info_tag {
@@ -301,7 +303,7 @@ p {
 
 #info > div > textarea {
 	width: calc(100% - 16px);
-	margin-left: 8px;
+	margin: auto;
 }
 
 #info_space div:not(.comment_children) {

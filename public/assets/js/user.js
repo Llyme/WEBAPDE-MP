@@ -1,15 +1,10 @@
 let logged_in = q("#info_send") != null;
 let skip = 0;
 let busy;
-let _id = document.body.getAttribute("_id");
-let view = document.body.getAttribute("view");
 // Used to see which post to comment on.
 let post_selected;
 // Used to see which comment to reply on.
 let comment_selected;
-
-document.body.removeAttribute("_id");
-document.body.removeAttribute("view");
 
 
 //-- The text input when the user wants to reply to someone. --//
@@ -29,7 +24,10 @@ comment_field[1].setAttribute("button", 0);
 
 function Comment(elm, doc, user) {
 	let child;
-	let url = "/user/user-" + user.username;
+	let url = "/user-" + user.username;
+
+	// Show the comment section.
+	q("#info div")[0].removeAttribute("hidden", 1);
 
 	let div = q("!div");
 	div.innerHTML = "<a href=\"" + url + "\">" +
@@ -110,29 +108,39 @@ function Card(doc) {
 	let a = q("!a");
 	a.className = "card";
 
-	a.setAttribute("href", "post/post-" + doc._id);
+	a.setAttribute("href", "post-" + doc._id);
 
 	a.addEventListener("click", event => {
 		event.stopPropagation();
 		event.preventDefault();
 
+		// Reset everything.
+
 		post_selected = doc._id;
 		info_preview.src = src;
 		info_space.innerHTML = "";
 
+		info.removeAttribute("invisible");
+
+		// Set visibility of the comment section.
+		if (doc.tag || junksan._id)
+			q("#info div")[0].removeAttribute("hidden", 1);
+		else
+			q("#info div")[0].setAttribute("hidden", 1);
+
+		// Set visibility for the tags.
 		if (doc.tag) {
 			q("#info_tag").removeAttribute("hidden");
 			q("#info_tag").innerHTML = doc.tag;
 		} else
 			q("#info_tag").setAttribute("hidden", 1);
 
-		if (_id)
-			if (doc.owner == _id)
-				q("#info_share").removeAttribute("hidden");
-			else
-				q("#info_share").setAttribute("hidden", 1);
+		// Set visibility for the share button.
+		if (junksan._id && doc.owner == junksan._id)
+			q("#info_share").removeAttribute("hidden");
+		else
+			q("#info_share").setAttribute("hidden", 1);
 
-		info.removeAttribute("invisible");
 		load_comment(info_space, doc._id, 0);
 	});
 
@@ -162,10 +170,13 @@ function load_post() {
 		method: "post",
 		url: "user_view",
 		headervalue: "application/x-www-form-urlencoded",
-		data: {view, skip}
+		data: {
+			skip,
+			view: junksan.view
+		}
 	}, docs => {
 		if (docs == "-1")
-			view = null;
+			junksan.view = null;
 		else try {
 			docs = JSON.parse(docs);
 			skip += 10;
@@ -372,7 +383,7 @@ q("#main").addEventListener("wheel", function() {
 
 	if (main.scrollHeight ==
 		main.scrollTop + window.innerHeight)
-		if (view)
+		if (junksan.view)
 			load_post();
 	else {
 		// No more memes. Destroy this event.

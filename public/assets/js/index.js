@@ -3,15 +3,10 @@ let skip = 0;
 // -1 = Not yet done; 0 = Done (No message); 1 = Done (With message).
 let done = -1;
 let busy;
-let _id = document.body.getAttribute("_id");
-let sort = document.body.getAttribute("sort");
 // Used to see which post to comment on.
 let post_selected;
 // Used to see which comment to reply on.
 let comment_selected;
-
-document.body.removeAttribute("_id");
-document.body.removeAttribute("sort");
 
 //-- The text input when the user wants to reply to someone. --//
 
@@ -30,7 +25,10 @@ comment_field[1].setAttribute("button", 0);
 
 function Comment(elm, doc, user) {
 	let child;
-	let url = "/user/user-" + user.username;
+	let url = "/user-" + user.username;
+
+	// Show the comment section.
+	q("#info div")[0].removeAttribute("hidden", 1);
 
 	let div = q("!div");
 	div.innerHTML = "<a href=\"" + url + "\">" +
@@ -111,29 +109,39 @@ function Card(doc) {
 	let a = q("!a");
 	a.className = "card";
 
-	a.setAttribute("href", "post/post-" + doc._id);
+	a.setAttribute("href", "post-" + doc._id);
 
 	a.addEventListener("click", event => {
 		event.stopPropagation();
 		event.preventDefault();
 
+		// Reset everything.
+
 		post_selected = doc._id;
 		info_preview.src = src;
 		info_space.innerHTML = "";
 
+		info.removeAttribute("invisible");
+
+		// Set visibility of the comment section.
+		if (doc.tag || junksan._id)
+			q("#info div")[0].removeAttribute("hidden", 1);
+		else
+			q("#info div")[0].setAttribute("hidden", 1);
+
+		// Set visibility for the tags.
 		if (doc.tag) {
 			q("#info_tag").removeAttribute("hidden");
 			q("#info_tag").innerHTML = doc.tag;
 		} else
 			q("#info_tag").setAttribute("hidden", 1);
 
-		if (_id)
-			if (doc.owner == _id)
-				q("#info_share").removeAttribute("hidden");
-			else
-				q("#info_share").setAttribute("hidden", 1);
+		// Set visibility for the share button.
+		if (junksan._id && doc.owner == junksan._id)
+			q("#info_share").removeAttribute("hidden");
+		else
+			q("#info_share").setAttribute("hidden", 1);
 
-		info.removeAttribute("invisible");
 		load_comment(info_space, doc._id, 0);
 	});
 
@@ -161,7 +169,7 @@ function load_post() {
 
 	r({
 		method: "post",
-		url: sort,
+		url: junksan.sort,
 		headervalue: "application/x-www-form-urlencoded",
 		data: {
 			skip,
@@ -408,7 +416,7 @@ q("#main").addEventListener("wheel", _ => {
 //-- Melee initialization. --//
 
 // Select the currently selected sort.
-q("#sidebar div #" + sort).setAttribute("selected", 1);
+q("#sidebar div #" + junksan.sort).setAttribute("selected", 1);
 
 // Grab the first 10 ASAP.
 load_post();

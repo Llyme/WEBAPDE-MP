@@ -16,10 +16,10 @@ const hubby = require("./assets/js/hubby.js");
 const sap = require("./assets/js/sort-a-potty.js");
 const db = require("./assets/js/db.js"); // DB Config
 
+
 //-- Constant indices. --//
 
 const sorts = ["now", "hot", "new", "sad", "old"];
-
 
 //-- Setup models. --//
 

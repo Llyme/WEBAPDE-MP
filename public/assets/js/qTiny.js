@@ -11,7 +11,20 @@ const q = v => {
 			t = document.getElementsByClassName(v[i].substr(1));
 			break;
 		case "!":
-			return document.createElement(v[i].substr(1));
+			let e = document.createElement(v[i].substr(1));
+
+			v.shift();
+
+			v.map(v => {
+				v = v.split("=");
+
+				if (v[0] == "delete")
+					return setTimeout(_ => e.remove(), v[1]*1000);
+
+				e.setAttribute(v[0], v[1]);
+			});
+
+			return e;
 		default:
 			t = document.getElementsByTagName(v[i]);
 	} else {
@@ -32,6 +45,26 @@ const q = v => {
 			case ".":
 				t = t.getElementsByClassName(v[i].substr(1));
 				break;
+			case "!":
+				let e = document.createElement(v[i].substr(1));
+
+				v.slice(i+1).map(v => {
+					v = v.split("=");
+
+					if (v[0] == "delete")
+						return setTimeout(_ => e.remove(), v[1]*1000);
+
+					e.setAttribute(v[0], v[1]);
+				});
+
+				let p = q(v.slice(0, i).join(" "));
+
+				if (p instanceof HTMLCollection)
+					p = p[0];
+
+				p.appendChild(e);
+
+				return e;
 			default:
 				t = t.getElementsByTagName(v[i]);
 		}

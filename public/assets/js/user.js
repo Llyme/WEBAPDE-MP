@@ -63,23 +63,6 @@ function Comment(elm, doc, user) {
 		});
 
 		div.appendChild(button);
-
-		for (let i = 0; i < 2; i++) {
-			let img = q("!img");
-			img.className = "comment_" + (i ? "downvote" : "upvote");
-			img.src = "assets/img/blank.png";
-			img.setAttribute("draggable", false);
-			img.setAttribute("spritesheet", 1);
-			img.addEventListener("click", _ => {
-				if (img.getAttribute("active")) {
-					img.removeAttribute("active");
-				} else {
-					img.setAttribute("active", 1);
-				}
-			});
-
-			div.appendChild(img);
-		}
 	}
 
 	if (doc.comments[0] || doc.comments == true) {

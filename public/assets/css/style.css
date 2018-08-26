@@ -367,9 +367,35 @@ p {
 	transition: none;
 }
 
+#info_owner {
+	position: absolute;
+	top: 0;
+	margin-left: -8px;
+	transform: translateX(-100%);
+}
+
+#info_owner > label {
+	display: block;
+	text-align: center;
+	cursor: pointer;
+}
+
+#info_owner > label:first-child {
+	margin-bottom: 8px;
+	font-size: 12px;
+}
+
+#info_owner > img {
+	display: block;
+	width: 48px;
+	height: 48px;
+}
+
 #info_upvote,
 #info_downvote,
-#info_share {
+#info_share,
+#info_edit,
+#info_delete {
 	width: 32px;
 	height: 32px;
 	border-radius: 6px;
@@ -392,6 +418,18 @@ p {
 	left: calc(100% + 8px);
 	top: 0;
 	background-position: -96 -32;
+}
+
+#info_edit {
+	left: calc(100% + 8px);
+	top: 40px;
+	background-position: -128 0;
+}
+
+#info_delete {
+	left: calc(100% + 8px);
+	top: 80px;
+	background-position: -128 -32;
 }
 
 .comment_upvote,
@@ -500,6 +538,41 @@ p {
 	padding: 6px 16px;
 }
 
+#sidebar > btn {
+	display: block;
+	width: 100%;
+	margin: 16px 0;
+	border-radius: 8px;
+	line-height: 42px;
+	box-shadow: 0 0 2px #000;
+	font-size: 18px;
+	font-weight: lighter;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+#sidebar > btn:hover {
+	filter: brightness(120%);
+}
+
+#sidebar > btn:active {
+	filter: brightness(80%);
+	transition: none;
+}
+
+#sidebar_login_btn {
+	background-color: #3f5f9f;
+}
+
+#sidebar_reg_btn {
+	background-color: #3f7f0f;
+}
+
+#sidebar_upload {
+	background-color: #9f5f3f;
+}
+
 #logo {
 	display: block;
 	height: 85px;
@@ -507,6 +580,45 @@ p {
 	margin: auto;
 	margin-top: 16px;
 	box-shadow: 0 0 2px #000;
+}
+
+
+/* edit */
+
+#edit div {
+	position: absolute;
+	display: block;
+	left: 0;
+	right: 0;
+	top: 50%;
+	width: 320px;
+	margin: auto;
+	border-radius: 8px;
+	background-color: #3a3a3e;
+	box-shadow: 0 0 2px #000;
+	transform: translateY(-50%);
+	text-align: center;
+}
+
+#edit * {
+	display: block;
+	margin: 8px;
+}
+
+#edit label {
+	margin-bottom: 16px;
+	font-size: 24px;
+	font-weight: lighter;
+	text-align: center;
+}
+
+#edit btn {
+	display: inline-block;
+	margin: 8px 0;
+}
+
+btn#edit_confirm {
+	margin-right: 8px;
 }
 
 

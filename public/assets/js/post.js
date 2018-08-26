@@ -54,23 +54,6 @@ function Comment(elm, doc, user) {
 		});
 
 		div.appendChild(button);
-
-		for (let i = 0; i < 2; i++) {
-			let img = q("!img");
-			img.className = "comment_" + (i ? "downvote" : "upvote");
-			img.src = "assets/img/blank.png";
-			img.setAttribute("draggable", false);
-			img.setAttribute("spritesheet", 1);
-			img.addEventListener("click", _ => {
-				if (img.getAttribute("active")) {
-					img.removeAttribute("active");
-				} else {
-					img.setAttribute("active", 1);
-				}
-			});
-
-			div.appendChild(img);
-		}
 	}
 
 	if (doc.comments[0] || doc.comments == true) {
@@ -188,36 +171,42 @@ if (junksan._id) {
 
 		comment_field[0].value = "";
 	});
+}
 
 
-	//-- Share Functions. --//
+//-- Share Functions. --//
 
-	q("#info_share").addEventListener("click", _ =>
-		q("#share").removeAttribute("invisible", 1)
-	);
+{
+	let btn = q("#info_share");
 
-	q("#share_submit").addEventListener("click", _ => {
-		r({
-			method: "post",
-			url: "share",
-			headervalue: "application/x-www-form-urlencoded",
-			data: {
-				post: post_selected,
-				username: q("#share_text").value.toLowerCase()
-			}
+	if (btn) {
+		btn.addEventListener("click", _ =>
+			q("#share").removeAttribute("invisible", 1)
+		);
+
+		q("#share_submit").addEventListener("click", _ => {
+			r({
+				method: "post",
+				url: "share",
+				headervalue: "application/x-www-form-urlencoded",
+				data: {
+					post: post_selected,
+					username: q("#share_text").value.toLowerCase()
+				}
+			});
+
+			q("#share").setAttribute("invisible", 1);
 		});
 
-		q("#share").setAttribute("invisible", 1);
-	});
+		q("#share_cancel").addEventListener("click", _ => {
+			q("#share").setAttribute("invisible", 1);
+		});
 
-	q("#share_cancel").addEventListener("click", _ => {
-		q("#share").setAttribute("invisible", 1);
-	});
-
-	q("#share").addEventListener("click", event =>
-		event.target == q("#share") &&
-		q("#share").setAttribute("invisible", 1)
-	);
+		q("#share").addEventListener("click", event =>
+			event.target == q("#share") &&
+			q("#share").setAttribute("invisible", 1)
+		);
+	}
 }
 
 

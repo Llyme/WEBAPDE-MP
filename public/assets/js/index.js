@@ -1,4 +1,4 @@
-let logged_in = q("#info_send") != null;
+let logged_in = junksan._id != "";
 let skip = 0;
 // -1 = Not yet done; 0 = Done (No message); 1 = Done (With message).
 let done = -1;
@@ -26,9 +26,6 @@ comment_field[1].setAttribute("button", 0);
 function Comment(elm, doc, user) {
 	let child;
 	let url = "/user-" + user.username;
-
-	// Show the comment section.
-	q("#info div")[0].removeAttribute("hidden", 1);
 
 	let div = q("!div");
 	div.innerHTML = "<a href=\"" + url + "\">" +
@@ -64,23 +61,6 @@ function Comment(elm, doc, user) {
 		});
 
 		div.appendChild(button);
-
-		for (let i = 0; i < 2; i++) {
-			let img = q("!img");
-			img.className = "comment_" + (i ? "downvote" : "upvote");
-			img.src = "assets/img/blank.png";
-			img.setAttribute("draggable", false);
-			img.setAttribute("spritesheet", 1);
-			img.addEventListener("click", _ => {
-				if (img.getAttribute("active")) {
-					img.removeAttribute("active");
-				} else {
-					img.setAttribute("active", 1);
-				}
-			});
-
-			div.appendChild(img);
-		}
 	}
 
 	if (doc.comments[0] || doc.comments == true) {
@@ -123,12 +103,6 @@ function Card(doc) {
 
 		info.removeAttribute("invisible");
 
-		// Set visibility of the comment section.
-		if (doc.tag || junksan._id)
-			q("#info div")[0].removeAttribute("hidden", 1);
-		else
-			q("#info div")[0].setAttribute("hidden", 1);
-
 		// Set visibility for the tags.
 		if (doc.tag) {
 			q("#info_tag").removeAttribute("hidden");
@@ -137,10 +111,14 @@ function Card(doc) {
 			q("#info_tag").setAttribute("hidden", 1);
 
 		// Set visibility for the share button.
-		if (junksan._id && doc.owner == junksan._id)
-			q("#info_share").removeAttribute("hidden");
+		if (junksan._id) if (doc.owner == junksan._id)
+			["#info_share", "#info_edit", "#info_delete"].map(v =>
+				q(v).removeAttribute("hidden")
+			);
 		else
-			q("#info_share").setAttribute("hidden", 1);
+			["#info_share", "#info_edit", "#info_delete"].map(v =>
+				q(v).setAttribute("hidden", 1)
+			);
 
 		load_comment(info_space, doc._id, 0);
 	});
@@ -314,12 +292,13 @@ info.addEventListener("click", event =>
 );
 
 
-//-- Setup function for file uploading. --//
+
+//-- Setup if user is logged-in or not. --//
 
 if (logged_in) {
 	//-- Upload Functions. --//
 
-	q("#account_upload").addEventListener("click", _ =>
+	q("#sidebar_upload").addEventListener("click", _ =>
 		q("#upload_form_file").click()
 	);
 
@@ -388,6 +367,52 @@ if (logged_in) {
 		event.target == q("#share") &&
 		q("#share").setAttribute("invisible", 1)
 	);
+
+	q("#info_delete").addEventListener("click", _ => {
+		nani(
+			"Woah there!",
+			"This will remove the post forever and it cannot be " +
+			"undone! Are you really, really sure about this?",
+			["Yes", "No"]
+		);
+	});
+} else {
+	//-- Disable commenting. --//
+
+	let fn = _ => nani(
+		"Not Logged In!",
+		"Sorry about that, but you need to login to comment " +
+		"on this post."
+	);
+
+	q("#info_send").addEventListener("click", fn);
+	q("#info_input").addEventListener("focus", function() {
+		this.blur();
+		fn();
+	});
+
+
+	//-- Setup login/register functions. --//
+
+	q("#sidebar_login_btn").addEventListener("click", function() {
+		this.setAttribute("hidden", 1);
+		q("#sidebar_login").removeAttribute("hidden");
+
+		q("#login_uname").focus();
+
+		q("#sidebar_reg_btn").removeAttribute("hidden");
+		q("#sidebar_reg").setAttribute("hidden", 1);
+	});
+
+	q("#sidebar_reg_btn").addEventListener("click", function() {
+		this.setAttribute("hidden", 1);
+		q("#sidebar_reg").removeAttribute("hidden");
+
+		q("#reg_uname").focus();
+
+		q("#sidebar_login_btn").removeAttribute("hidden");
+		q("#sidebar_login").setAttribute("hidden", 1);
+	});
 }
 
 

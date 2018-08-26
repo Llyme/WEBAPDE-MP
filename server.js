@@ -496,9 +496,9 @@ hubby.post("upload", (req, res) => {
 				__dirname + "/public/dat/img/" + post._id
 			);
 
-			data.image.pipe(fstream);
+			fstream.on("finish", _ => res.redirect("/"));
 
-			res.redirect("/");
+			data.image.pipe(fstream);
 		}));
 	});
 });

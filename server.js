@@ -14,11 +14,11 @@ const dbz = require("./assets/js/db-zeal.js");
 const sheepstick = require("./assets/js/sheep-stick.js");
 const hubby = require("./assets/js/hubby.js");
 const sap = require("./assets/js/sort-a-potty.js");
-
+const db = require("./assets/js/db.js"); // DB Config
+                  
 //-- Constant indices. --//
 
 const sorts = ["now", "hot", "new", "sad", "old"];
-
 
 //-- Setup models. --//
 
@@ -33,7 +33,7 @@ const model = {};
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect("mongodb://localhost:27017/ForTheMemes", {
+mongoose.connect(db.mongoURI, {
 	useNewUrlParser: true
 });
 
@@ -595,7 +595,7 @@ hubby.post("share", (req, res) => {
 
 
 //-- Melee initialization. --//
-
-app.listen(3000, _ =>
+const port = process.env.PORT || 3000;
+app.listen(port, _ =>
 	console.log("Listening @ localhost:3000")
 );

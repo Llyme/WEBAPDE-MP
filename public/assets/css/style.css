@@ -575,10 +575,11 @@ p {
 
 #logo {
 	display: block;
-	height: 85px;
-    width: 250px;
+	height: 96px;
 	margin: auto;
 	margin-top: 16px;
+	border-radius: 48px;
+	background-color: #fff;
 	box-shadow: 0 0 2px #000;
 }
 

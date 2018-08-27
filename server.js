@@ -599,5 +599,5 @@ hubby.post("share", (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, _ =>
-	console.log("Listening @ localhost:3000")
+	console.log(`Server start on port ${port}`)
 );

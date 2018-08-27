@@ -24,15 +24,21 @@
 	<div id=main>
 		<div id=root>
 			<div id=sidebar>
+                <!--for when it is deployed-->
+                <a href="/">
+                    <img style="height: 90px; width: 250px;" src="assets\img\LuLgag.png">
+                </a>
 				<img id=logo src=dat\avatar\0.jpg>
 				<div>
 					<center>Welcome to my humble abode...</center>
 				</div>
 				{{#if username}}
+                    <!--<btn id=sidebar_upload>Upload Meme</btn>-->
 					<div id=account>
 						<center>Hello, {{nickname}}!</center>
+                        <a href="/" button=0>Home</a>
 						<button id=account_upload button=0>Upload Meme</button>
-						<a href="user/user-{{username}}" button=0>My Memes</a>
+						<!--<a href="user/user-{{username}}" button=0>My Memes</a>-->
 						<a href=logout button=0>Logout</a>
 					</div>
 				{{else}}
@@ -49,7 +55,7 @@
 					</form>
 				{{/if}}
 				<p id=cpyr>
-					Site Map<br>
+					About<br>
 					&copy; 2018 LuLgag All Rights Reserved.
 				</p>
 			</div>

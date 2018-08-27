@@ -8,6 +8,8 @@
 	<script src=assets/js/rTiny.js></script>
 	<script src=assets/js/maketh.js></script>
 	<script src=assets/js/nani.js></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -26,6 +28,9 @@
 	<div id=main>
 		<div id=root>
 			<div id=sidebar>
+                <a href="/">
+                    <img style="height: 90px; width: 250px;" src="assets\img\LuLgag.png">
+                </a>
 				<img id=logo src=dat\avatar\0.jpg>
 				<div>
 					<center>Welcome to my humble abode...</center>
@@ -34,6 +39,7 @@
 					<btn id=sidebar_upload>Upload Meme</btn>
 					<div id=account>
 						<center>Hello, {{nickname}}!</center>
+                        <a href="/" button=0>Home</a>
 						<a href="/user-{{username}}" button=0>My Memes</a>
 						<a href=logout button=0>Logout</a>
 					</div>
@@ -53,7 +59,7 @@
 					</form>
 				{{/if}}
 				<p id=cpyr>
-					Site Map<br>
+					<a data-toggle="modal" href="#myModal">About</a><br>
 					&copy; 2018 LuLgag All Rights Reserved.
 				</p>
 			</div>
@@ -112,6 +118,58 @@
 			</div>
 		</div>
 	{{/if}}
+    <!--Modal-->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>LuLgag</h1>
+                    <b>LUL is "Lame Uncomfortable Laugh"</b>
+                    
+                    <h3>LuLgag was made with the following Dependencies:</h3>
+                    <ul>
+                        <li>fs</li>
+                        <li>path</li>
+                        <li>express</li>
+                        <li>express-session</li>
+                        <li>body-parser</li>
+                        <li>hbs</li>
+                        <li>cookie-parser</li>
+                        <li>mongoose</li>
+                        <li>connect-busboy</li>
+                        <li>crypto</li>
+                        <li>bootstrap(for about view)</li>
+                    </ul>
+                    <h3>Site Map: </h3>
+                    <ul>
+                        <li>Main Page</li>
+                        <ul>
+                            <li>My Account</li>
+                            <li>View Meme</li>
+                            <li>Login</li>
+                            <ul>
+                                <li>Upload Meme</li>
+                                <li>Edit Meme</li>
+                                <li>Delete Meme</li>
+                                <li>Share Meme</li>
+                                <li>Comment on Meme</li>
+                            </ul>
+                            <li>Register</li>
+                            <ul>
+                                <li>Redirects to Main Page</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                    <h3>Members</h3>
+                    Minaga, Raymundo, Wong
+                    <br><br>
+                </div>
+                <a href="/" button=0>Back</a>
+            </div>
+        </div>
+    </div>
 	<!--<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>-->
 	<script src=assets/js/junk-san.js></script>
 	<script src=assets/js/user.js></script>

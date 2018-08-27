@@ -545,7 +545,7 @@ p {
 	line-height: 42px;
 	box-shadow: 0 0 2px #000;
 	font-size: 18px;
-	font-weight: lighter;
+	font-weight: 600;
 	text-align: center;
 	cursor: pointer;
 	transition: all 0.2s;
@@ -569,18 +569,19 @@ p {
 }
 
 #sidebar_upload {
-	background-color: #9f5f3f;
+    color: black;
+	background-color: rgb(215, 218, 220);
 }
 
 #logo {
 	display: block;
-	height: 85px;
-    width: 250px;
+	height: 96px;
 	margin: auto;
 	margin-top: 16px;
+	border-radius: 48px;
+	background-color: #fff;
 	box-shadow: 0 0 2px #000;
 }
-
 
 /* edit */
 

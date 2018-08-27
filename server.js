@@ -791,7 +791,9 @@ hubby.post("delete", (req, res) => {
 
 		try {
 			model.post.deleteOne({_id: req.body.post}).then(_ => {});
-		} catch(err) {}
+		} catch(err) {
+            console.log(err)
+        }
 
 		res.send("1");
 	});

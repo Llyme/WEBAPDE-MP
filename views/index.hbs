@@ -1,190 +1,179 @@
 <html>
 
 <head>
-	<title>LuLgag</title>
+    <title>LuLgag</title>
     <link rel="icon" href="https://i.imgur.com/2EiDBoG.png">
-	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
-	<script src=assets/js/qTiny.js></script>
-	<script src=assets/js/rTiny.js></script>
-	<script src=assets/js/maketh.js></script>
-	<script src=assets/js/nani.js></script>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <script src=assets/js/qTiny.js></script>
+    <script src=assets/js/rTiny.js></script>
+    <script src=assets/js/maketh.js></script>
+    <script src=assets/js/nani.js></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
 </head>
 
 <body>
-	<dump
-		_id="{{_id}}"
-		sort="{{sort}}"
-	></dump>
-	{{#if username}}
-		<form id=upload_form action=upload method=post enctype=multipart/form-data hidden>
-			<input id=upload_form_text name=caption type=text>
-			<input id=upload_form_tag name=tag type=text>
-			<input id=upload_form_privacy name=privacy type=number>
-			<input id=upload_form_file name=image type=file accept="image/x-png,image/gif,image/jpeg">
-		</form>
-	{{/if}}
-	<div id=main>
-		<div id=root>
-			<div id=sidebar>
-                <img style="height: 90px; width: 250px;" src="assets\img\LuLgag.png">
-                
-                <!--btn for modal login/register-->
-                <!--<button button="0" style="margin-left: 28px">LOG IN</button>
-                <button button="0" style="margin-left: 28px; background-color: #0198E1">SIGN UP </button>-->
-				<div>
-					<input id=sidebar_search type=text placeholder=Search>
-					<a id=now href="now" button=1>Now</a>
-					<a id=hot href="hot" button=1 red>Hot</a>
-					<a id=new href="new" button=1 green>New</a>
-					<a id=sad href="sad" button=1 purple>Sad</a>
-					<a id=old href="old" button=1 orange>Old</a>
-				</div>
-				{{#if username}}
-					<btn id=sidebar_upload>Upload Meme</btn>
-					<div id=account>
-						<center>Hello, {{nickname}}!</center>
-						<a href="user-{{username}}" button=0>My Memes</a>
-						<a href=logout button=0>Logout</a>
-					</div>
-				{{else}}
-					<btn id=sidebar_login_btn>Login</btn>
-					<form id=sidebar_login action=login method=post hidden>
-						<input id=login_uname type=text placeholder=Username name=uname>
-						<input id=login_pword type=password placeholder=Password name=pword>
-						<input id=login align=center type=submit value=Login button=0>
-					</form>
-					<btn id=sidebar_reg_btn>Register</btn>
-					<form id=sidebar_reg action=register method=post hidden>
-						<input id=reg_uname type=text placeholder=Username name=uname>
-						<input id=reg_pword type=password placeholder=Password name=pword>
-						<input id=reg_cword type=password placeholder="Confirm Password" name=cword>
-						<input id=register align=center type=submit value=Register button=0>
-					</form>
-				{{/if}}
-				<p id=cpyr>
-					<!--About Modal-->
-                    <a data-toggle="modal" href="#myModal">About</a><br>
-					&copy; 2018 LuLgag All Rights Reserved.
-				</p>
-			</div>
-			<div id=deck></div>
-		</div>
-	</div>
-	<div id=info invisible dim>
-		<img id=info_preview draggable=false>
-		<div>
-			<label id=info_tag hidden></label>
-			{{#if username}}
-				<img id=info_share src=assets/img/blank.png draggable=false spritesheet hidden>
-				<img id=info_edit src=assets/img/blank.png draggable=false spritesheet hidden>
-				<img id=info_delete src=assets/img/blank.png draggable=false spritesheet hidden>
-			{{/if}}
-			<textarea id=info_input placeholder="Comment here."></textarea>
-			<button id=info_send class=info_send button=0>Send</button>
-			<div id=info_space></div>
-			<a id=info_owner>
-				<label>post by</label>
-				<img id=info_owner_img draggable=false>
-				<label id=info_owner_name></label>
-			</a>
-		</div>
-	</div>
-	{{#if username}}
-		<div id=upload dim invisible>
-			<div>
-				<img id=upload_img draggable=false>
-				<input id=upload_text type=text placeholder=Caption>
-				<input id=upload_tag type=text placeholder=Tags>
-				<select id=upload_privacy name=privacy>
-					<option value=0 selected>Public</option>
-					<option value=1>Unlisted</option>
-					<option value=2>Private</option>
-				</select>
-				<input id=upload_cancel type=button value=Cancel button="0">
-				<input id=upload_submit type=button value=Submit button="0">
-			</div>
-		</div>
-		<div id=edit dim invisible>
-			<div>
-				<label>Edit</label>
-				<input id=edit_caption type=text placeholder=Caption>
-				<input id=edit_tag type=text placeholder=Tags>
-				<btn id=edit_confirm button=0>Confirm</btn>
-				<btn id=edit_cancel button=0>Cancel</btn>
-			</div>
-		</div>
-        
-         <!--Modal-->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-    
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-body">
-                <h1>LuLgag</h1>
-                <h3>LuLgag was made with the following Dependencies:</h3>
-                <ul>
-                    <li>fs</li>
-                    <li>path</li>
-                    <li>express</li>
-                    <li>express-session</li>
-                    <li>body-parser</li>
-                    <li>mongoose</li>
-                    <li>connect-busboy</li>
-                    <li>crypto</li>
-                    <li>jquery</li>
-                    <li>bootstrap</li>
-                </ul>
-                <h3>Site Map: </h3>
-                <ul>
-                    <li>Main Page</li>
-                     <ul>
-                      <li>My Account</li>
-                      <li>View Meme</li>
-                      <li>Login</li>
-                         <ul>
-                            <li>Upload Meme</li>
-                            <li>Edit Meme</li>
-                            <li>Delete Meme</li>
-                         </ul>
-                      <li>Register</li>
-                         <ul>
-                            <li>Rederects to Main Page</li>
-                         </ul>
-                     </ul>
-                </ul>
-                <h3>Members</h3>
-                <ul>
-                <li>Khaldon Minaga</li>
-                <li>Luis Raymundo</li>
-                <li>Michael Wong</li>
-        
-                </ul>
-            
+    <dump _id="{{_id}}" sort="{{sort}}"></dump>
+    {{#if username}}
+    <form id=upload_form action=upload method=post enctype=multipart/form-data hidden>
+        <input id=upload_form_text name=caption type=text>
+        <input id=upload_form_tag name=tag type=text>
+        <input id=upload_form_privacy name=privacy type=number>
+        <input id=upload_form_file name=image type=file accept="image/x-png,image/gif,image/jpeg">
+    </form>
+    {{/if}}
+    <div id=main>
+        <div id=root>
+            <div id=sidebar>
+                <a href="/">
+                    <img style="height: 90px; width: 250px;" src="assets\img\LuLgag.png">
+                </a>
+                <div>
+                    <input id=sidebar_search type=text placeholder=Search>
+                    <a id=now href="now" button=1>Now</a>
+                    <a id=hot href="hot" button=1 red>Hot</a>
+                    <a id=new href="new" button=1 green>New</a>
+                    <a id=sad href="sad" button=1 purple>Sad</a>
+                    <a id=old href="old" button=1 orange>Old</a>
+                </div>
+                {{#if username}}
+                <btn id=sidebar_upload>Upload Meme</btn>
+                <div id=account>
+                    <center>Hello, {{nickname}}!</center>
+                    <a href="user-{{username}}" button=0>My Memes</a>
+                    <a href=logout button=0>Logout</a>
+                </div>
+                {{else}}
+                <btn id=sidebar_login_btn>Login</btn>
+                <form id=sidebar_login action=login method=post hidden>
+                    <input id=login_uname type=text placeholder=Username name=uname>
+                    <input id=login_pword type=password placeholder=Password name=pword>
+                    <input id=login align=center type=submit value=Login button=0>
+                </form>
+                <btn id=sidebar_reg_btn>Register</btn>
+                <form id=sidebar_reg action=register method=post hidden>
+                    <input id=reg_uname type=text placeholder=Username name=uname>
+                    <input id=reg_pword type=password placeholder=Password name=pword>
+                    <input id=reg_cword type=password placeholder="Confirm Password" name=cword>
+                    <input id=register align=center type=submit value=Register button=0>
+                </form>
+                {{/if}}
+                <p id=cpyr>
+                    <!--About Modal-->
+                    <a data-toggle="modal" href="#myModal">About</a>
+                    <br> &copy; 2018 LuLgag All Rights Reserved.
+                </p>
             </div>
-            <!--<div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Back To Home</button>
-            </div>-->
-        </div>
+            <div id=deck></div>
         </div>
     </div>
-    
-		<div id=share dim invisible>
-			<div>
-				<label>Share</label>
-				<input id=share_text type=text placeholder=Username>
-				<input id=share_cancel type=button value=Cancel button="0">
-				<input id=share_submit type=button value=Submit button="0">
-			</div>
-		</div>
-	{{/if}}
-    
-	<!--<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>-->
-	<script src=assets/js/junk-san.js></script>
-	<script src=assets/js/index.js></script>
+    <div id=info invisible dim>
+        <img id=info_preview draggable=false>
+        <div>
+            <label id=info_tag hidden></label>
+            {{#if username}}
+            <img id=info_share src=assets/img/blank.png draggable=false spritesheet hidden>
+            <img id=info_edit src=assets/img/blank.png draggable=false spritesheet hidden>
+            <img id=info_delete src=assets/img/blank.png draggable=false spritesheet hidden> {{/if}}
+            <textarea id=info_input placeholder="Comment here."></textarea>
+            <button id=info_send class=info_send button=0>Send</button>
+            <div id=info_space></div>
+            <a id=info_owner>
+                <label>post by</label>
+                <img id=info_owner_img draggable=false>
+                <label id=info_owner_name></label>
+            </a>
+        </div>
+    </div>
+    {{#if username}}
+    <div id=upload dim invisible>
+        <div>
+            <img id=upload_img draggable=false>
+            <input id=upload_text type=text placeholder=Caption>
+            <input id=upload_tag type=text placeholder=Tags>
+            <select id=upload_privacy name=privacy>
+                <option value=0 selected>Public</option>
+                <option value=1>Unlisted</option>
+                <option value=2>Private</option>
+            </select>
+            <input id=upload_cancel type=button value=Cancel button="0">
+            <input id=upload_submit type=button value=Submit button="0">
+        </div>
+    </div>
+    <div id=edit dim invisible>
+        <div>
+            <label>Edit</label>
+            <input id=edit_caption type=text placeholder=Caption>
+            <input id=edit_tag type=text placeholder=Tags>
+            <btn id=edit_confirm button=0>Confirm</btn>
+            <btn id=edit_cancel button=0>Cancel</btn>
+        </div>
+    </div>
+    <div id=share dim invisible>
+        <div>
+            <label>Share</label>
+            <input id=share_text type=text placeholder=Username>
+            <input id=share_cancel type=button value=Cancel button="0">
+            <input id=share_submit type=button value=Submit button="0">
+        </div>
+    </div>
+    {{/if}}
+    <!--Modal-->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>LuLgag</h1>
+                    <b>LUL is "Lame Uncomfortable Laugh"</b>
+
+                    <h3>LuLgag was made with the following Dependencies:</h3>
+                    <ul>
+                        <li>fs</li>
+                        <li>path</li>
+                        <li>express</li>
+                        <li>express-session</li>
+                        <li>body-parser</li>
+                        <li>hbs</li>
+                        <li>cookie-parser</li>
+                        <li>mongoose</li>
+                        <li>connect-busboy</li>
+                        <li>crypto</li>
+                        <li>bootstrap(for about view)</li>
+                    </ul>
+                    <h3>Site Map: </h3>
+                    <ul>
+                        <li>Main Page</li>
+                        <ul>
+                            <li>My Account</li>
+                            <li>View Meme</li>
+                            <li>Login</li>
+                            <ul>
+                                <li>Upload Meme</li>
+                                <li>Edit Meme</li>
+                                <li>Delete Meme</li>
+                                <li>Share Meme</li>
+                                <li>Comment on Meme</li>
+                            </ul>
+                            <li>Register</li>
+                            <ul>
+                                <li>Redirects to Main Page</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                    <h3>Members</h3>
+                    Minaga, Raymundo, Wong
+                    <br><br>
+                </div>
+                <a href="/" button=0>Back</a>
+            </div>
+        </div>
+    </div>
+
+    <!--<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>-->
+    <script src=assets/js/junk-san.js></script>
+    <script src=assets/js/index.js></script>
 
 </body>
 

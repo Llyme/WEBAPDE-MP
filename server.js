@@ -5,8 +5,8 @@ const session = require("express-session");
 const bodyparser = require("body-parser");
 const hbs = require("hbs");
 const cookieparser = require("cookie-parser");
-const mongoose = require("mongoose");
 const busboy = require("connect-busboy");
+const mongoose = require("mongoose");
 const crypt = require("crypto");
 
 const bbq = require("./assets/js/bbQueue.js");
@@ -154,47 +154,7 @@ hubby.get("*", (req, res, url) => {
 
 //-- User entry. --//
 
-// Register protocol.
-hubby.post("register", (req, res) => {
-	let username = req.body.uname.toLowerCase();
-
-	model.user.findOne({
-		username
-	}).then(doc => (!doc && new model.user({
-		nickname: req.body.uname,
-		username,
-		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
-	}).save().then(doc => {
-		req.session._id = doc._id;
-		req.session.nickname = req.body.uname;
-		req.session.username = username;
-
-		res.redirect("/");
-	})) || res.redirect("/"));
-});
-
-// Login protocol.
-hubby.post("login", (req, res) => {
-	req.body.uname = req.body.uname.toLowerCase();
-
-	model.user.findOne({
-		username: req.body.uname,
-		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
-	}).then(doc => {
-		if (doc) {
-			req.session._id = doc._id;
-			req.session.nickname = doc.nickname;
-			req.session.username = req.body.uname;
-		}
-
-		res.redirect("/");
-	});
-});
-
-hubby.get("logout", (req, res) => {
-	req.session.destroy();
-	res.redirect("/");
-})
+const users = require('./controllers/user');
 
 
 //-- Sorting Section. --//

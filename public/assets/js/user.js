@@ -1,4 +1,4 @@
-let logged_in = q("#info_send") != null;
+let logged_in = junksan._id != "";
 let skip = 0;
 let busy;
 // Used to see which post to comment on.
@@ -97,32 +97,43 @@ function Card(doc) {
 		event.stopPropagation();
 		event.preventDefault();
 
-		// Reset everything.
 
-		post_selected = doc._id;
+		//-- Reset everything. --//
+
+		post_selected = doc;
 		info_preview.src = src;
 		info_space.innerHTML = "";
 
 		info.removeAttribute("invisible");
 
-		// Set visibility of the comment section.
-		if (doc.tag || junksan._id)
-			q("#info div")[0].removeAttribute("hidden", 1);
-		else
-			q("#info div")[0].setAttribute("hidden", 1);
 
-		// Set visibility for the tags.
-		if (doc.tag) {
+		//-- Set post owner. --//
+
+		q("#info_owner")
+			.setAttribute("href", "/user-" + doc.owner.username);
+		q("#info_owner_img").src = "dat/avatar/0.jpg";
+		q("#info_owner_name").innerHTML = doc.owner.nickname;
+
+
+		//-- Set visibility for the tags. --//
+
+		if (doc.tag_expanded) {
 			q("#info_tag").removeAttribute("hidden");
-			q("#info_tag").innerHTML = doc.tag;
+			q("#info_tag").innerHTML = doc.tag_expanded;
 		} else
 			q("#info_tag").setAttribute("hidden", 1);
 
-		// Set visibility for the share button.
-		if (junksan._id && doc.owner == junksan._id)
-			q("#info_share").removeAttribute("hidden");
+
+		//-- Set visibility for the share button. --//
+
+		if (junksan._id) if (doc.owner._id == junksan._id)
+			["#info_share", "#info_edit", "#info_delete"].map(v =>
+				q(v).removeAttribute("hidden")
+			);
 		else
-			q("#info_share").setAttribute("hidden", 1);
+			["#info_share", "#info_edit", "#info_delete"].map(v =>
+				q(v).setAttribute("hidden", 1)
+			);
 
 		load_comment(info_space, doc._id, 0);
 	});
@@ -164,17 +175,17 @@ function load_post() {
 			docs = JSON.parse(docs);
 			skip += 10;
 
-			for (let i in docs) {
+			docs.posts.map(doc => {
+				doc.owner = docs.users[doc.owner];
+
 				// Setup tags.
-				if (docs[i].tag.length)
-					docs[i].tag = docs[i].tag.split(" ").map(
+				if (doc.tag.length)
+					doc.tag_expanded = doc.tag.split(" ").map(
 						v => "#" + v
 					).join(" ");
-				else
-					docs[i].tag = null;
 
-				Card(docs[i]);
-			}
+				Card(doc);
+			});
 		} catch(err) {}
 
 		busy = 0;
@@ -225,6 +236,14 @@ function load_comment(elm, parent, skip, is_comment) {
 }
 
 
+//-- Setup for window behavior. --//
+
+// Hide window when clicking outside.
+info.addEventListener("click", event =>
+	event.target == info && info.setAttribute("invisible", 1)
+);
+
+
 //-- Setup function for commenting. --//
 
 if (logged_in) {
@@ -238,7 +257,7 @@ if (logged_in) {
 			url: "reply",
 			headervalue: "application/x-www-form-urlencoded",
 			data: {
-				post: post_selected,
+				post: post_selected._id,
 				text: info_input.value
 			}
 		}, doc => { try {
@@ -274,49 +293,10 @@ if (logged_in) {
 		comment_field[0].value = "";
 	});
 
-	//-- Share Functions. --//
 
-	q("#info_share").addEventListener("click", _ =>
-		q("#share").removeAttribute("invisible", 1)
-	);
+	//-- Upload Functions. --//
 
-	q("#share_submit").addEventListener("click", _ => {
-		r({
-			method: "post",
-			url: "share",
-			headervalue: "application/x-www-form-urlencoded",
-			data: {
-				post: post_selected,
-				username: q("#share_text").value.toLowerCase()
-			}
-		});
-
-		q("#share").setAttribute("invisible", 1);
-	});
-
-	q("#share_cancel").addEventListener("click", _ => {
-		q("#share").setAttribute("invisible", 1);
-	});
-
-	q("#share").addEventListener("click", event =>
-		event.target == q("#share") &&
-		q("#share").setAttribute("invisible", 1)
-	);
-}
-
-
-//-- Setup for window behavior. --//
-
-// Hide window when clicking outside.
-info.addEventListener("click", event =>
-	event.target == info && info.setAttribute("invisible", 1)
-);
-
-
-//-- Setup function for file uploading. --//
-
-if (logged_in) {
-	q("#account_upload").addEventListener("click", _ =>
+	q("#sidebar_upload").addEventListener("click", _ =>
 		q("#upload_form_file").click()
 	);
 
@@ -354,6 +334,152 @@ if (logged_in) {
 		q("#upload_form_privacy").value = q("#upload_privacy").value;
 
 		q("#upload_form").submit();
+	});
+
+
+	//-- Share Functions. --//
+
+	q("#info_share").addEventListener("click", _ =>
+		share.removeAttribute("invisible", 1)
+	);
+
+	q("#share_submit").addEventListener("click", _ => {
+		r({
+			method: "post",
+			url: "share",
+			headervalue: "application/x-www-form-urlencoded",
+			data: {
+				post: post_selected._id,
+				username: q("#share_text").value.toLowerCase()
+			}
+		});
+
+		share.setAttribute("invisible", 1);
+	});
+
+	q("#share_cancel").addEventListener("click", _ =>
+		share.setAttribute("invisible", 1)
+	);
+
+	share.addEventListener("click", event =>
+		event.target == share && share.setAttribute("invisible", 1)
+	);
+
+
+	//-- Edit functions. --//
+
+	q("#info_edit").addEventListener("click", _ => {
+		q("#edit_caption").value = post_selected.caption;
+		q("#edit_tag").value = post_selected.tag;
+
+		edit.removeAttribute("invisible");
+	});
+
+	q("#edit_confirm").addEventListener("click", _ => r({
+		method: "post",
+		url: "edit",
+		headervalue: "application/x-www-form-urlencoded",
+		data: {
+			_id: junksan._id,
+			post: post_selected._id,
+			caption: q("#edit_caption").value,
+			tag: q("#edit_tag").value
+		}
+	}, res => {
+		if (res == "1") nani(
+			"Successfully edited!",
+			"Your post will be updated the next time you see it."
+		); else nani(
+			"Whoops!",
+			"It looks like something went wrong...<br>Sorry about " +
+			"that.",
+			["Jeez..."]
+		);
+
+		doc.caption = q("#edit_caption").value;
+		doc.tag = q("#edit_tag").value;
+
+		q("#edit").setAttribute("invisible", 1);
+	}));
+
+	q("#edit_cancel").addEventListener("click", _ =>
+		edit.setAttribute("invisible", 1)
+	);
+
+	edit.addEventListener("click", event =>
+		event.target == edit && edit.setAttribute("invisible", 1)
+	);
+
+
+	//-- Delete functions. --//
+
+	q("#info_delete").addEventListener("click", _ => nani(
+		"Woah there!",
+		"This will remove the post forever and it cannot be " +
+		"undone! Are you really, really sure about this?",
+		["Yes", "No"],
+		i => {
+			if (i == 0) r({
+				method: "post",
+				url: "delete",
+				headervalue: "application/x-www-form-urlencoded",
+				data: {
+					_id: junksan._id,
+					post: post_selected._id
+				}
+			}, res => {
+				if (res == "1") nani(
+					"Deleted... :(",
+					"Your post will be missed...",
+					null,
+					i => location.reload()
+				); else nani(
+					"Whoops!",
+					"It looks like something went wrong...<br>Sorry " +
+					"about that.",
+					["Jeez..."]
+				);
+			});
+
+			return 1;
+		}
+	));
+} else {
+	//-- Disable commenting. --//
+
+	let fn = _ => nani(
+		"Not Logged In!",
+		"Sorry about that, but you need to login to comment " +
+		"on this post."
+	);
+
+	q("#info_send").addEventListener("click", fn);
+	q("#info_input").addEventListener("focus", function() {
+		this.blur();
+		fn();
+	});
+
+
+	//-- Setup login/register functions. --//
+
+	q("#sidebar_login_btn").addEventListener("click", function() {
+		this.setAttribute("hidden", 1);
+		q("#sidebar_login").removeAttribute("hidden");
+
+		q("#login_uname").focus();
+
+		q("#sidebar_reg_btn").removeAttribute("hidden");
+		q("#sidebar_reg").setAttribute("hidden", 1);
+	});
+
+	q("#sidebar_reg_btn").addEventListener("click", function() {
+		this.setAttribute("hidden", 1);
+		q("#sidebar_reg").removeAttribute("hidden");
+
+		q("#reg_uname").focus();
+
+		q("#sidebar_login_btn").removeAttribute("hidden");
+		q("#sidebar_login").setAttribute("hidden", 1);
 	});
 }
 

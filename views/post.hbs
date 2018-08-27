@@ -5,6 +5,8 @@
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 	<script src=assets/js/qTiny.js></script>
 	<script src=assets/js/rTiny.js></script>
+	<script src=assets/js/maketh.js></script>
+	<script src=assets/js/nani.js></script>
 </head>
 
 <body>
@@ -12,26 +14,41 @@
 		_id="{{_id}}"
 		post="{{post}}"
 		has_comments="{{has_comments}}"
+		caption="{{caption}}"
+		tag="{{tag}}"
 	></dump>
 	<div id=info>
+		<label id=info_caption>{{caption}}</label>
 		<img id=info_preview src="dat/img/{{post}}" draggable=false>
-		{{#if show}}
-			<div>
-				{{#if tag}}
-					<label id=info_tag>{{tag}}</label>
-				{{/if}}
-				{{#if _id}}
-					{{#if owner}}
-						<img id=info_share src=assets/img/blank.png draggable=false spritesheet>
-					{{/if}}
-					<textarea id=info_input placeholder="Comment here."></textarea>
-					<button id=info_send class=info_send button=0>Send</button>
-				{{/if}}
-				<div id=info_space></div>
-			</div>
-		{{/if}}
+		<div>
+			{{#if tag}}
+				<label id=info_tag>{{tag}}</label>
+			{{/if}}
+			{{#if is_owner}}
+				<img id=info_share src=assets/img/blank.png draggable=false spritesheet>
+				<img id=info_edit src=assets/img/blank.png draggable=false spritesheet>
+				<img id=info_delete src=assets/img/blank.png draggable=false spritesheet>
+			{{/if}}
+			<textarea id=info_input placeholder="Comment here."></textarea>
+			<button id=info_send class=info_send button=0>Send</button>
+			<div id=info_space></div>
+			<a id=info_owner href="/user-{{owner_username}}">
+				<label>post by</label>
+				<img id=info_owner_img src=dat/avatar/0.jpg draggable=false>
+				<label id=info_owner_name>{{owner_nickname}}</label>
+			</a>
+		</div>
 </div>
 	{{#if username}}
+		<div id=edit dim invisible>
+			<div>
+				<label>Edit</label>
+				<input id=edit_caption type=text placeholder=Caption>
+				<input id=edit_tag type=text placeholder=Tags>
+				<btn id=edit_confirm button=0>Confirm</btn>
+				<btn id=edit_cancel button=0>Cancel</btn>
+			</div>
+		</div>
 		<div id=share dim invisible>
 			<div>
 				<label>Share this meme to...</label>
@@ -41,7 +58,7 @@
 			</div>
 		</div>
 	{{/if}}
-	<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>
+	<!--<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>-->
 	<script src=assets/js/junk-san.js></script>
 	<script src=assets/js/post.js></script>
 </body>

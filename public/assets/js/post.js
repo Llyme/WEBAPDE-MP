@@ -136,7 +136,7 @@ if (junksan._id) {
 			url: "reply",
 			headervalue: "application/x-www-form-urlencoded",
 			data: {
-				post: _id,
+				post: junksan.post,
 				text: info_input.value
 			}
 		}, doc => { try {
@@ -171,6 +171,129 @@ if (junksan._id) {
 
 		comment_field[0].value = "";
 	});
+
+
+	//-- Share Functions. --//
+
+	q("#info_share").addEventListener("click", _ =>
+		share.removeAttribute("invisible", 1)
+	);
+
+	q("#share_submit").addEventListener("click", _ => {
+		r({
+			method: "post",
+			url: "share",
+			headervalue: "application/x-www-form-urlencoded",
+			data: {
+				post: junksan.post,
+				username: q("#share_text").value.toLowerCase()
+			}
+		});
+
+		share.setAttribute("invisible", 1);
+	});
+
+	q("#share_cancel").addEventListener("click", _ =>
+		share.setAttribute("invisible", 1)
+	);
+
+	share.addEventListener("click", event =>
+		event.target == share && share.setAttribute("invisible", 1)
+	);
+
+
+	//-- Edit functions. --//
+
+	q("#info_edit").addEventListener("click", _ => {
+		q("#edit_caption").value = junksan.caption;
+		q("#edit_tag").value = junksan.tag;
+
+		edit.removeAttribute("invisible");
+	});
+
+	q("#edit_confirm").addEventListener("click", _ => r({
+		method: "post",
+		url: "edit",
+		headervalue: "application/x-www-form-urlencoded",
+		data: {
+			_id: junksan._id,
+			post: junksan.post,
+			caption: q("#edit_caption").value,
+			tag: q("#edit_tag").value
+		}
+	}, res => {
+		if (res == "1") nani(
+			"Successfully edited!",
+			"Your post will be updated the next time you see it."
+		); else nani(
+			"Whoops!",
+			"It looks like something went wrong...<br>Sorry about " +
+			"that.",
+			["Jeez..."]
+		);
+
+		junksan.caption = q("#edit_caption").value;
+		junksan.tag = q("#edit_tag").value;
+
+		q("#edit").setAttribute("invisible", 1);
+	}));
+
+	q("#edit_cancel").addEventListener("click", _ =>
+		edit.setAttribute("invisible", 1)
+	);
+
+	edit.addEventListener("click", event =>
+		event.target == edit && edit.setAttribute("invisible", 1)
+	);
+
+
+	//-- Delete functions. --//
+
+	q("#info_delete").addEventListener("click", _ => nani(
+		"Woah there!",
+		"This will remove the post forever and it cannot be " +
+		"undone! Are you really, really sure about this?",
+		["Yes", "No"],
+		i => {
+			if (i == 0) r({
+				method: "post",
+				url: "delete",
+				headervalue: "application/x-www-form-urlencoded",
+				data: {
+					_id: junksan._id,
+					post: junksan.post
+				}
+			}, res => {
+				if (res == "1") nani(
+					"Deleted... :(",
+					"Your post will be missed...",
+					null,
+					i => q("body !a href=/").click()
+				); else nani(
+					"Whoops!",
+					"It looks like something went wrong...<br>Sorry " +
+					"about that.",
+					["Jeez..."]
+				);
+			});
+
+			return 1;
+		}
+	));
+} else {
+	//-- Disable commenting. --//
+
+	let fn = _ => nani(
+		"Not Logged In!",
+		"Sorry about that, but you need to login to comment " +
+		"on this post."
+	);
+
+	q("#info_send").addEventListener("click", fn);
+	q("#info_input").addEventListener("focus", function() {
+		this.blur();
+		fn();
+	});
 }
 
 
@@ -190,7 +313,7 @@ if (junksan._id) {
 				url: "share",
 				headervalue: "application/x-www-form-urlencoded",
 				data: {
-					post: post_selected,
+					post: junksan.post,
 					username: q("#share_text").value.toLowerCase()
 				}
 			});

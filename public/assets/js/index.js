@@ -95,23 +95,36 @@ function Card(doc) {
 		event.stopPropagation();
 		event.preventDefault();
 
-		// Reset everything.
 
-		post_selected = doc._id;
+		//-- Reset everything. --//
+
+		post_selected = doc;
 		info_preview.src = src;
 		info_space.innerHTML = "";
 
 		info.removeAttribute("invisible");
 
-		// Set visibility for the tags.
-		if (doc.tag) {
+
+		//-- Set post owner. --//
+
+		q("#info_owner")
+			.setAttribute("href", "/user-" + doc.owner.username);
+		q("#info_owner_img").src = "dat/avatar/0.jpg";
+		q("#info_owner_name").innerHTML = doc.owner.nickname;
+
+
+		//-- Set visibility for the tags. --//
+
+		if (doc.tag_expanded) {
 			q("#info_tag").removeAttribute("hidden");
-			q("#info_tag").innerHTML = doc.tag;
+			q("#info_tag").innerHTML = doc.tag_expanded;
 		} else
 			q("#info_tag").setAttribute("hidden", 1);
 
-		// Set visibility for the share button.
-		if (junksan._id) if (doc.owner == junksan._id)
+
+		//-- Set visibility for the share button. --//
+
+		if (junksan._id) if (doc.owner._id == junksan._id)
 			["#info_share", "#info_edit", "#info_delete"].map(v =>
 				q(v).removeAttribute("hidden")
 			);
@@ -158,19 +171,19 @@ function load_post() {
 			done = 0;
 		else try {
 			docs = JSON.parse(docs);
-			skip += docs.length;
+			skip += docs.posts.length;
 
-			for (let i in docs) {
+			docs.posts.map(doc => {
+				doc.owner = docs.users[doc.owner];
+
 				// Setup tags.
-				if (docs[i].tag.length)
-					docs[i].tag = docs[i].tag.split(" ").map(
+				if (doc.tag.length)
+					doc.tag_expanded = doc.tag.split(" ").map(
 						v => "#" + v
 					).join(" ");
-				else
-					docs[i].tag = null;
 
-				Card(docs[i]);
-			}
+				Card(doc);
+			});
 		} catch(err) {}
 
 		busy = 0;
@@ -197,7 +210,7 @@ function load_comment(elm, parent, skip, is_comment) {
 			for (let i in docs.comments) Comment(
 				elm,
 				docs.comments[i],
-				docs.users[docs.comments[i].owner]
+				docs.users[docs.comments[i].owner._id]
 			);
 
 			if (docs.has_more) {
@@ -235,9 +248,19 @@ q("#sidebar_search").addEventListener("keydown", event => {
 });
 
 
+//-- Setup for window behavior. --//
+
+// Hide window when clicking outside.
+info.addEventListener("click", event =>
+	event.target == info && info.setAttribute("invisible", 1)
+);
+
+
 //-- Setup function for commenting. --//
 
 if (logged_in) {
+	//-- Upload Functions. --//
+
 	q("#info_send").addEventListener("click", _ => {
 		let info_input = q("#info_input");
 
@@ -246,7 +269,7 @@ if (logged_in) {
 			url: "reply",
 			headervalue: "application/x-www-form-urlencoded",
 			data: {
-				post: post_selected,
+				post: post_selected._id,
 				text: info_input.value
 			}
 		}, doc => { try {
@@ -281,21 +304,8 @@ if (logged_in) {
 
 		comment_field[0].value = "";
 	});
-}
 
 
-//-- Setup for window behavior. --//
-
-// Hide window when clicking outside.
-info.addEventListener("click", event =>
-	event.target == info && info.setAttribute("invisible", 1)
-);
-
-
-
-//-- Setup if user is logged-in or not. --//
-
-if (logged_in) {
 	//-- Upload Functions. --//
 
 	q("#sidebar_upload").addEventListener("click", _ =>
@@ -342,7 +352,7 @@ if (logged_in) {
 	//-- Share Functions. --//
 
 	q("#info_share").addEventListener("click", _ =>
-		q("#share").removeAttribute("invisible", 1)
+		share.removeAttribute("invisible", 1)
 	);
 
 	q("#share_submit").addEventListener("click", _ => {
@@ -351,31 +361,101 @@ if (logged_in) {
 			url: "share",
 			headervalue: "application/x-www-form-urlencoded",
 			data: {
-				post: post_selected,
+				post: post_selected._id,
 				username: q("#share_text").value.toLowerCase()
 			}
 		});
 
-		q("#share").setAttribute("invisible", 1);
+		share.setAttribute("invisible", 1);
 	});
 
-	q("#share_cancel").addEventListener("click", _ => {
-		q("#share").setAttribute("invisible", 1);
-	});
-
-	q("#share").addEventListener("click", event =>
-		event.target == q("#share") &&
-		q("#share").setAttribute("invisible", 1)
+	q("#share_cancel").addEventListener("click", _ =>
+		share.setAttribute("invisible", 1)
 	);
 
-	q("#info_delete").addEventListener("click", _ => {
-		nani(
-			"Woah there!",
-			"This will remove the post forever and it cannot be " +
-			"undone! Are you really, really sure about this?",
-			["Yes", "No"]
-		);
+	share.addEventListener("click", event =>
+		event.target == share && share.setAttribute("invisible", 1)
+	);
+
+
+	//-- Edit functions. --//
+
+	q("#info_edit").addEventListener("click", _ => {
+		q("#edit_caption").value = post_selected.caption;
+		q("#edit_tag").value = post_selected.tag;
+
+		edit.removeAttribute("invisible");
 	});
+
+	q("#edit_confirm").addEventListener("click", _ => r({
+		method: "post",
+		url: "edit",
+		headervalue: "application/x-www-form-urlencoded",
+		data: {
+			_id: junksan._id,
+			post: post_selected._id,
+			caption: q("#edit_caption").value,
+			tag: q("#edit_tag").value
+		}
+	}, res => {
+		if (res == "1") nani(
+			"Successfully edited!",
+			"Your post will be updated the next time you see it."
+		); else nani(
+			"Whoops!",
+			"It looks like something went wrong...<br>Sorry about " +
+			"that.",
+			["Jeez..."]
+		);
+
+		doc.caption = q("#edit_caption").value;
+		doc.tag = q("#edit_tag").value;
+
+		q("#edit").setAttribute("invisible", 1);
+	}));
+
+	q("#edit_cancel").addEventListener("click", _ =>
+		edit.setAttribute("invisible", 1)
+	);
+
+	edit.addEventListener("click", event =>
+		event.target == edit && edit.setAttribute("invisible", 1)
+	);
+
+
+	//-- Delete functions. --//
+
+	q("#info_delete").addEventListener("click", _ => nani(
+		"Woah there!",
+		"This will remove the post forever and it cannot be " +
+		"undone! Are you really, really sure about this?",
+		["Yes", "No"],
+		i => {
+			if (i == 0) r({
+				method: "post",
+				url: "delete",
+				headervalue: "application/x-www-form-urlencoded",
+				data: {
+					_id: junksan._id,
+					post: post_selected._id
+				}
+			}, res => {
+				if (res == "1") nani(
+					"Deleted... :(",
+					"Your post will be missed...",
+					null,
+					i => location.reload()
+				); else nani(
+					"Whoops!",
+					"It looks like something went wrong...<br>Sorry " +
+					"about that.",
+					["Jeez..."]
+				);
+			});
+
+			return 1;
+		}
+	));
 } else {
 	//-- Disable commenting. --//
 

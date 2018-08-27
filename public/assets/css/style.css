@@ -139,10 +139,6 @@ p {
 
 /* share */
 
-#share {
-	transition: opacity 0.2s;
-}
-
 #share > div {
 	position: absolute;
 	top: 50%;
@@ -184,10 +180,6 @@ p {
 
 
 /* upload */
-
-#upload {
-	transition: opacity 0.2s;
-}
 
 #upload > div {
 	position: absolute;
@@ -250,10 +242,6 @@ p {
 
 /* info */
 
-#info {
-	transition: opacity 0.2s;
-}
-
 #info > div {
 	position: relative;
 	top: 16px;
@@ -267,6 +255,17 @@ p {
 	border-radius: 8px;
 	padding-top: 8px;
 	padding-bottom: 8px;
+}
+
+#info_caption {
+	display: block;
+	position: relative;
+	left: 0;
+	right: 0;
+	margin: 16px auto;
+	font-size: 48px;
+	font-weight: lighter;
+	text-align: center;
 }
 
 #info_preview {
@@ -575,11 +574,10 @@ p {
 
 #logo {
 	display: block;
-	height: 96px;
+	height: 85px;
+    width: 250px;
 	margin: auto;
 	margin-top: 16px;
-	border-radius: 48px;
-	background-color: #fff;
 	box-shadow: 0 0 2px #000;
 }
 
@@ -874,11 +872,6 @@ btn#edit_confirm {
 }
 
 /* Modals */
-
-#about {
-cursor: pointer;
-}
-
  /* Style the Image Used to Trigger the Modal */
 .myImg {
 	border-radius: 5px;
@@ -973,6 +966,7 @@ cursor: pointer;
 
 [dim] {
 	background-color: #000000cf;
+	transition: opacity 0.2s;
 }
 
 [spritesheet] {

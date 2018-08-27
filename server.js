@@ -115,22 +115,30 @@ hubby.get("*", (req, res, url) => {
 					_id: url[0]
 				})
 			}, docs => {
-				if (docs.post && docs.post.privacy != 2 ||
+				if (!(docs.post && docs.post.privacy != 2 ||
 					docs.user && (
 						req.session._id == docs.post.owner ||
 						docs.user.shared.indexOf(url[0]) != -1
-					)) {
-					let tag = docs.post.tag
-						.split(" ")
-						.filter(v => v)
-						.map(v => "#" + v)
-						.join(" ") || null;
-					let has_comments = docs.post.comments.length > 0;
-					let _id = req.session._id;
+					)))
+					return res.redirect("/");
 
+				let tag = docs.post.tag
+					.split(" ")
+					.filter(v => v)
+					.map(v => "#" + v)
+					.join(" ") || null;
+				let has_comments = docs.post.comments.length > 0;
+				let _id = req.session._id;
+
+				model.user.findOne({
+					_id: docs.post.owner
+				}).then(owner =>
 					res.render("post.hbs", {
 						post: url[0],
-						owner: req.session._id == docs.post.owner,
+						is_owner: _id == owner._id,
+						owner_nickname: owner.nickname,
+						owner_username: owner.username,
+						caption: docs.post.caption,
 						tag,
 						// Used if the script needs to post request.
 						has_comments,
@@ -138,9 +146,8 @@ hubby.get("*", (req, res, url) => {
 						show: !!(tag || has_comments || _id),
 						_id,
 						username: req.session.username
-					});
-				} else
-					res.redirect("/");
+					})
+				);
 			});
 
 			/* Return 1 to tell 'hubby' that we can handle it from
@@ -163,7 +170,9 @@ hubby.post("register", (req, res) => {
 	}).then(doc => (!doc && new model.user({
 		nickname: req.body.uname,
 		username,
-		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
+		password: crypt.createHash("md5")
+			.update(req.body.pword)
+			.digest("hex")
 	}).save().then(doc => {
 		req.session._id = doc._id;
 		req.session.nickname = req.body.uname;
@@ -179,7 +188,9 @@ hubby.post("login", (req, res) => {
 
 	model.user.findOne({
 		username: req.body.uname,
-		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
+		password: crypt.createHash("md5")
+			.update(req.body.pword)
+			.digest("hex")
 	}).then(doc => {
 		if (doc) {
 			req.session._id = doc._id;
@@ -212,11 +223,40 @@ hubby.post(["old", "new", "sad", "hot", "now"], (req, res, url) => {
 		let debounce = {};
 		let l = req.body.tag.toLowerCase().split(" ");
 		let n = 1;
-		let f = _ => {
+		let fn = _ => {
 			if (!n) {
 				posts = posts.splice(skip, 10);
 
-				res.send(posts.length ? posts : "-1");
+				if (!posts.length)
+					return res.send("-1");
+
+				let ret = {
+					posts,
+					users: {}
+				}
+				let n = 1;
+				let fn = _ => !n && res.send(ret);
+
+				posts.map((doc, i) => {
+					if (ret.users[doc.owner])
+						return;
+
+					n++;
+
+					model.user.findOne({_id: doc.owner}).then(user => {
+						ret.users[doc.owner] = {
+							_id: doc.owner,
+							nickname: user.nickname,
+							username: user.nickname
+						};
+
+						n--;
+						fn();
+					})
+				});
+
+				n--;
+				fn();
 			}
 		};
 
@@ -252,79 +292,91 @@ hubby.post(["old", "new", "sad", "hot", "now"], (req, res, url) => {
 				}
 
 				n--;
-				f();
+				fn();
 			});
 		}
 
 		n--;
-		f();
-	} else switch(url[0]) {
-		case "old":
+		fn();
+	} else {
+		let fn = docs => {
+			if (docs && docs.length) {
+				let ret = {
+					posts: docs,
+					users: {}
+				};
+				let n = 1;
+				let fn = _ => !n && res.send(ret);
+
+				docs.map((doc, i) => {
+					if (ret.users[doc.owner])
+						return;
+
+					n++;
+
+					model.user.findOne({_id: doc.owner}).then(user => {
+						ret.users[doc.owner] = {
+							_id: doc.owner,
+							nickname: user.nickname,
+							username: user.nickname
+						};
+
+						n--;
+						fn();
+					})
+				});
+
+				n--;
+				fn();
+			} else
+				res.send("-1");
+		};
+
+		if (url[0] == "old") {
 			// Sort by creation date (_id; ascending).
 			model.post.find(query).sort({
 				_id: 1
-			}).skip(skip).limit(10).then(docs => res.send(
-				docs.length ? docs : "-1"
-			));
-
-			break;
-
-		case "new":
+			}).skip(skip).limit(10).then(fn);
+		} else if (url[0] == "new") {
 			// Sort by creation date (_id).
 			model.post.find(query).sort({
 				_id: -1
-			}).skip(skip).limit(10).then(docs => res.send(
-				docs.length ? docs : "-1"
-			));
-
-			break;
-
-		case "sad":
+			}).skip(skip).limit(10).then(fn);
+		} else if (url[0] == "sad") {
 			// Sort by reputation (ascending).
 			model.post.find(query).sort({
 				reputation: 1,
 				_id: -1
-			}).skip(skip).limit(10).then(docs => res.send(
-				docs.length ? docs : "-1"
-			));
-
-			break;
-
-		case "hot":
+			}).skip(skip).limit(10).then(fn);
+		} else if (url[0] == "hot") {
 			// Sort by reputation.
 			model.post.find(query).sort({
 				reputation: -1,
 				_id: -1
-			}).skip(skip).limit(10).then(docs => res.send(
-				docs.length ? docs : "-1"
-			));
-
-			break;
-
-		default:
-			// Sort by date (without time), then sort by reputation.
+			}).skip(skip).limit(10).then(fn);
+		} else {
+			// Sort by date (except time), then sort by reputation.
 			model.post.find(query).sort({
 				_id: -1
 			}).skip(skip).then(docs => {
-				if (docs.length) {
-					let d = 1000*60*60*24;
-					let now = Math.floor(
-						docs[0]._id.getTimestamp().getTime()/d
-					)*d;
-					let then = sheepstick(now+d);
-					now = sheepstick(now);
+				if (!docs.length)
+					return;
 
-					query._id = {$gte: now, $lt: then};
+				let d = 1000*60*60*24;
+				let now = Math.floor(
+					docs[0]._id.getTimestamp().getTime()/d
+				)*d;
+				let then = sheepstick(now+d);
+				now = sheepstick(now);
 
-					model.post.find(query).sort({
-						reputation: -1,
-						_id: -1
-					}).limit(10).then(docs => res.send(
-						docs.length ? docs : "-1"
-					));
-				} else
-					res.send("-1");
+				query._id = {$gte: now, $lt: then};
+
+				model.post.find(query).sort({
+					reputation: -1,
+					_id: -1
+				}).limit(10).then(fn);
 			});
+		}
 	}
 });
 
@@ -342,6 +394,36 @@ hubby.post("user_view", (req, res) => {
 		if (!user.b || skip >= user.b.posts.length)
 			return res.send("-1");
 
+		let fn = docs => {
+			let ret = {
+				posts: docs,
+				users: {}
+			}
+			let n = 1;
+			let fn = _ => !n && res.send(ret);
+
+			docs.map((doc, i) => {
+				if (ret.users[doc.owner])
+					return;
+
+				n++;
+
+				model.user.findOne({_id: doc.owner}).then(user => {
+					ret.users[doc.owner] = {
+						_id: doc.owner,
+						nickname: user.nickname,
+						username: user.nickname
+					};
+
+					n--;
+					fn();
+				})
+			});
+
+			n--;
+			fn();
+		};
+
 		if (user.a) {
 			if (req.session._id != req.body.view) {
 				user.b.posts = user.b.posts
@@ -358,7 +440,7 @@ hubby.post("user_view", (req, res) => {
 				(a, b) => a.reputation - b.reputation
 			);
 
-			res.send(user.b.posts.splice(
+			fn(user.b.posts.splice(
 				user.b.posts.length - skip - 10,
 				10
 			));
@@ -371,7 +453,7 @@ hubby.post("user_view", (req, res) => {
 
 			user.b.posts.sort((a, b) => a.reputation - b.reputation);
 
-			res.send(user.b.posts.splice(
+			fn(user.b.posts.splice(
 				user.b.posts.length - skip - 10,
 				10
 			));
@@ -468,26 +550,23 @@ hubby.post("upload", (req, res) => {
 		], data => new model.post({
 			owner: user._id,
 			caption: data.caption,
-			tag: data.tag,
+			tag: data.tag
+				.toLowerCase()
+				.split(" ")
+				.filter(v => v)
+				.join(" "),
 			reputation: 0,
 			privacy: Number(data.privacy)
 		}).save().then(post => {
-			let l = data.tag.toLowerCase().split(" ");
+			post.tag.split(" ").filter(v => v).map(text =>
+				model.tag.findOne({text}).then(tag => {
+					if (!tag)
+						tag = new model.tag({text});
 
-			for (let i in l)
-				if (l[i].length) {
-					model.tag.findOne({
-						text: l[i]
-					}).then(doc => {
-						if (!doc)
-							doc = new model.tag({
-								text: l[i]
-							});
-
-						doc.posts.push(post);
-						doc.save();
-					});
-				}
+					tag.posts.push(post);
+					tag.save();
+				})
+			);
 
 			user.posts.push(post);
 			user.save();
@@ -569,7 +648,157 @@ hubby.post("reply", (req, res) => {
 });
 
 
-//-- Miscellaneous. --//
+//-- Edit post. --//
+
+hubby.post("edit", (req, res) => {
+	if (!req.session._id || req.session._id != req.body._id)
+		return res.send("-1");
+
+	model.user.findOne({_id: req.body._id}).then(user => {
+		if (!user)
+			return res.send("-1");
+
+		let user_post = user.posts.find(v => v._id == req.body.post);
+
+		if (!user_post)
+			return res.send("-1");
+
+
+		//-- Format tags. --//
+
+			// Old
+		let a = user_post.tag.split(" ").filter(v => v),
+			// New
+			b = req.body.tag.toLowerCase().split(" ").filter(v => v);
+
+		req.body.tag = b.join(" ");
+
+
+		//-- Setup user.post. --//
+
+		user_post.caption = req.body.caption;
+		user_post.tag = req.body.tag;
+
+		user.save();
+
+
+		//-- Setup post. --//
+
+		model.post.findOne({_id: req.body.post}).then(post => {
+			if (!post)
+				return;
+
+			post.caption = req.body.caption;
+			post.tag = req.body.tag;
+
+			post.save();
+		});
+
+
+		//-- Setup tag. --//
+
+		a.map(v => {
+			model.tag.findOne({text: v}).then(tag => {
+				if (b.indexOf(v) != -1) {
+					let tag_post = tag.posts.find(v =>
+						v._id == req.body.post
+					);
+
+					if (!tag_post)
+						return;
+
+					tag_post.caption = req.body.caption;
+					tag_post.tag = req.body.tag;
+				} else
+					tag.posts.find((v, i) => {
+						if (v._id == req.body.post) {
+							tag.posts.splice(i, 1);
+
+							return 1;
+						}
+					});
+
+				tag.save();
+			});
+		});
+
+		b.map(v => {
+			if (a.indexOf(v) == -1)
+				model.tag.findOne({text: v}).then(tag => {
+					if (!tag) new model.tag({
+						text: v
+					}).save().then(tag => {
+						tag.posts.push(user_post);
+						tag.save();
+					}); else {
+						tag.posts.push(user_post);
+						tag.save();
+					}
+				});
+		});
+
+
+		//-- Send confirmation. --//
+
+		res.send("1");
+	});
+});
+
+
+//-- Delete post. --//
+
+hubby.post("delete", (req, res) => {
+	if (!req.session._id || req.session._id != req.body._id)
+		return res.send("-1");
+
+	model.user.findOne({_id: req.body._id}).then(user => {
+		if (!user)
+			return res.send("-1");
+
+		let user_post = user.posts.find((v, i) => {
+			if (v._id == req.body.post) {
+				user.posts.splice(i, 1);
+				user.save();
+
+				return 1;
+			}
+		});
+
+		if (!user_post)
+			return res.send("-1");
+
+
+		//-- Delete tags. --//
+
+		user_post.tag.split(" ").filter(v => v).map(v => {
+			model.tag.findOne({text: v}).then(tag => {
+				if (!tag)
+					return;
+
+				tag.posts.find((v, i) => {
+					if (v._id == req.body.post) {
+						tag.posts.splice(i, 1);
+						tag.save();
+
+						return 1;
+					}
+				});
+			});
+		});
+
+
+		//-- Delete post. --//
+
+		try {
+			model.post.deleteOne({_id: req.body.post}).then(_ => {});
+		} catch(err) {}
+
+		res.send("1");
+	});
+});
+
+
+//-- Share post. --//
 
 hubby.post("share", (req, res) => {
 	dbz.abstract({
@@ -599,5 +828,5 @@ hubby.post("share", (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, _ =>
-	console.log(`Server start on port ${port}`)
+	console.log("Listening @ localhost:3000")
 );

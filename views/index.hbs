@@ -8,6 +8,9 @@
 	<script src=assets/js/rTiny.js></script>
 	<script src=assets/js/maketh.js></script>
 	<script src=assets/js/nani.js></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
 </head>
 
 <body>
@@ -62,7 +65,8 @@
 					</form>
 				{{/if}}
 				<p id=cpyr>
-					Site Map<br>
+					<!--About Modal-->
+                    <a data-toggle="modal" href="#myModal">About</a><br>
 					&copy; 2018 LuLgag All Rights Reserved.
 				</p>
 			</div>
@@ -112,6 +116,62 @@
 				<btn id=edit_cancel button=0>Cancel</btn>
 			</div>
 		</div>
+        
+         <!--Modal-->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+    
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <h1>LuLgag</h1>
+                <h3>LuLgag was made with the following Dependencies:</h3>
+                <ul>
+                    <li>fs</li>
+                    <li>path</li>
+                    <li>express</li>
+                    <li>express-session</li>
+                    <li>body-parser</li>
+                    <li>mongoose</li>
+                    <li>connect-busboy</li>
+                    <li>crypto</li>
+                    <li>jquery</li>
+                    <li>bootstrap</li>
+                </ul>
+                <h3>Site Map: </h3>
+                <ul>
+                    <li>Main Page</li>
+                     <ul>
+                      <li>My Account</li>
+                      <li>View Meme</li>
+                      <li>Login</li>
+                         <ul>
+                            <li>Upload Meme</li>
+                            <li>Edit Meme</li>
+                            <li>Delete Meme</li>
+                         </ul>
+                      <li>Register</li>
+                         <ul>
+                            <li>Rederects to Main Page</li>
+                         </ul>
+                     </ul>
+                </ul>
+                <h3>Members</h3>
+                <ul>
+                <li>Khaldon Minaga</li>
+                <li>Luis Raymundo</li>
+                <li>Michael Wong</li>
+        
+                </ul>
+            
+            </div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Back To Home</button>
+            </div>-->
+        </div>
+        </div>
+    </div>
+    
 		<div id=share dim invisible>
 			<div>
 				<label>Share</label>
@@ -121,6 +181,7 @@
 			</div>
 		</div>
 	{{/if}}
+    
 	<!--<img id=nightmode src=assets/img/blank.png draggable=false spritesheet>-->
 	<script src=assets/js/junk-san.js></script>
 	<script src=assets/js/index.js></script>

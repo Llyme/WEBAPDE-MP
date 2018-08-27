@@ -8,6 +8,12 @@
 	<script src=assets/js/rTiny.js></script>
 	<script src=assets/js/maketh.js></script>
 	<script src=assets/js/nani.js></script>
+    
+   <!--<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -61,13 +67,14 @@
 					</form>
 				{{/if}}
 				<p id=cpyr>
-					About<br>
+                    <!--About Modal-->
+                    <a data-toggle="modal" href="#myModal">About</a><br>
 					&copy; 2018 LuLgag All Rights Reserved.
 				</p>
 			</div>
 			<div id=deck></div>
 		</div>
-	</div>
+	<!--</div>-->
 	<div id=info invisible dim>
 		<img id=info_preview draggable=false>
 		<div>
@@ -87,7 +94,59 @@
 			</a>
 		</div>
 	</div>
-	<div id=edit invisible dim>
+    
+    <!--Modal-->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+    
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <h1>LuLgag</h1>
+                <h3>LuLgag was made with the following Dependencies:</h3>
+                <ul>
+                    <li>fs</li>
+                    <li>path</li>
+                    <li>express</li>
+                    <li>express-session</li>
+                    <li>body-parser</li>
+                    <li>mongoose</li>
+                    <li>connect-busboy</li>
+                    <li>crypto</li>
+                </ul>
+                <h3>Site Map: </h3>
+                <ul>
+                    <li>Main Page</li>
+                     <ul>
+                      <li>My Account</li>
+                      <li>View Meme</li>
+                      <li>Login</li>
+                         <ul>
+                            <li>Upload Meme</li>
+                         </ul>
+                      <li>Register</li>
+                         <ul>
+                            <li>Rederects to Main Page</li>
+                         </ul>
+                     </ul>
+                </ul>
+                <h3>Members</h3>
+                <ul>
+                <li>Khaldon Minaga</li>
+                <li>Luis Raymundo</li>
+                <li>Michael Wong</li>
+        
+                </ul>
+            
+            </div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Back To Home</button>
+            </div>-->
+        </div>
+        </div>
+    </div>
+    
+    <div id=edit invisible dim>
 		<div>
 			<label>Edit</label>
 			<input id=edit_caption type=text placeholder=Caption>

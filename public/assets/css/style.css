@@ -874,6 +874,11 @@ btn#edit_confirm {
 }
 
 /* Modals */
+
+#about {
+cursor: pointer;
+}
+
  /* Style the Image Used to Trigger the Modal */
 .myImg {
 	border-radius: 5px;

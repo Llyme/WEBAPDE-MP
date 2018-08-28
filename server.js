@@ -213,6 +213,7 @@ hubby.get("logout", (req, res) => {
 hubby.post(["old", "new", "sad", "hot", "now"], (req, res, url) => {
 	let query = {$or: [
 		{privacy: 0},
+		{privacy: 2},
 		{owner: req.session._id}
 	]};
 	let skip = Number(req.body.skip);
@@ -300,10 +301,12 @@ hubby.post(["old", "new", "sad", "hot", "now"], (req, res, url) => {
 		fn();
 	} else {
 		let fn = docs => {
-			if (docs && docs.length) {
+			let length = docs.length;
+			let fn = _ => {
 				let ret = {
 					posts: docs,
-					users: {}
+					users: {},
+					length
 				};
 				let n = 1;
 				let fn = _ => !n && res.send(ret);
@@ -328,6 +331,17 @@ hubby.post(["old", "new", "sad", "hot", "now"], (req, res, url) => {
 
 				n--;
 				fn();
+			};
+
+			if (docs && docs.length) {
+				if (req.session._id)
+					model.user.findOne({_id: req.session._id}).then(user => {
+						if (user) {
+							docs.filter(v => v.privacy == 0 || user.shared.indexOf(v._id) != -1);
+							fn();
+						} else
+							res.send("-1");
+					});
 			} else
 				res.send("-1");
 		};

@@ -154,9 +154,8 @@ hubby.get("*", (req, res, url) => {
 
 //-- User entry. --//
 
-const users = require('./controllers/user');
-
-
+/*const users = require('./controllers/user');*/
+app.use(require('./controllers/user'));
 //-- Sorting Section. --//
 
 hubby.post(["old", "new", "sad", "hot", "now"], (req, res, url) => {
@@ -411,57 +410,7 @@ hubby.post("comment", (req, res) => {
 
 //-- Data transfer protocols. --//
 
-hubby.post("upload", (req, res) => {
-	let username = req.session.username;
-
-	if (username) model.user.findOne({
-		username
-	}).then(user => {
-		if (!user)
-			return res.redirect("/");
-
-		bbq(req, [
-			"caption",
-			"tag",
-			"privacy",
-			"image"
-		], data => new model.post({
-			owner: user._id,
-			caption: data.caption,
-			tag: data.tag,
-			reputation: 0,
-			privacy: Number(data.privacy)
-		}).save().then(post => {
-			let l = data.tag.toLowerCase().split(" ");
-
-			for (let i in l)
-				if (l[i].length) {
-					model.tag.findOne({
-						text: l[i]
-					}).then(doc => {
-						if (!doc)
-							doc = new model.tag({
-								text: l[i]
-							});
-
-						doc.posts.push(post);
-						doc.save();
-					});
-				}
-
-			user.posts.push(post);
-			user.save();
-
-			let fstream = fs.createWriteStream(
-				__dirname + "/public/dat/img/" + post._id
-			);
-
-			fstream.on("finish", _ => res.redirect("/"));
-
-			data.image.pipe(fstream);
-		}));
-	});
-});
+app.use(require('./controllers/post'));
 
 // Used to make a 'comment' object. Not to be confused with '/comment'.
 hubby.post("reply", (req, res) => {
@@ -558,6 +507,6 @@ hubby.post("share", (req, res) => {
 //-- Melee initialization. --//
 
 const port = process.env.PORT || 3000;
-app.listen(port, _ =>
-	console.log(`Server start on port ${port}`)
-);
+app.listen(port, ()=>{
+    console.log(`Server start on port ${port}`)
+});

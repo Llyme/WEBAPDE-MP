@@ -13,7 +13,7 @@ hubby.post("register", (req, res) => {
 
 	model.findOne({
 		username
-	}).then(doc => (!doc && new model.user({
+	}).then(doc => (!doc && new model({
 		nickname: req.body.uname,
 		username,
 		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
@@ -44,7 +44,10 @@ hubby.post("login", (req, res) => {
 	});
 });
 
+// Logout protocol
 hubby.get("logout", (req, res) => {
 	req.session.destroy();
 	res.redirect("/");
 })
+
+module.exports = hubby;

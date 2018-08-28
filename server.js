@@ -825,6 +825,11 @@ hubby.post("share", (req, res) => {
 	});
 });
 
+/*for mvc*/
+/*app.use(require("./controllers/user.js"));
+app.use(require("./controllers/post.js"));
+app.use(require("./controllers/comment.js"));*/
+
 
 //-- Melee initialization. --//
 

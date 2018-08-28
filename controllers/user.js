@@ -1,50 +1,25 @@
 const mongoose = require('mongoose');
 const crypt = require("crypto");
 
+const bbq = require("../assets/js/bbQueue.js");
+const dbz = require("../assets/js/db-zeal.js");
+const sheepstick = require("../assets/js/sheep-stick.js");
 const hubby = require("../assets/js/hubby.js");
+const sap = require("../assets/js/sort-a-potty.js");
+const db = require("../assets/js/db.js"); // DB Config
+//-- Setup models. --//
 
-// load user schema
-require('../models/user');
-const model = mongoose.model('user');
+const model = {};
 
-// Register protocol.
-hubby.post("register", (req, res) => {
-	let username = req.body.uname.toLowerCase();
-
-	model.findOne({
-		username
-	}).then(doc => (!doc && new model.user({
-		nickname: req.body.uname,
-		username,
-		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
-	}).save().then(doc => {
-		req.session._id = doc._id;
-		req.session.nickname = req.body.uname;
-		req.session.username = username;
-
-		res.redirect("/");
-	})) || res.redirect("/"));
+["comment", "post", "user", "tag"].map(v => {
+	model[v] = require("./models/" + v + ".js");
 });
 
-// Login protocol.
-hubby.post("login", (req, res) => {
-	req.body.uname = req.body.uname.toLowerCase();
+//-- Constant indices. --//
 
-	model.findOne({
-		username: req.body.uname,
-		password: crypt.createHash("md5").update(req.body.pword).digest("hex")
-	}).then(doc => {
-		if (doc) {
-			req.session._id = doc._id;
-			req.session.nickname = doc.nickname;
-			req.session.username = req.body.uname;
-		}
+const sorts = ["now", "hot", "new", "sad", "old"];
 
-		res.redirect("/");
-	});
-});
 
-hubby.get("logout", (req, res) => {
-	req.session.destroy();
-	res.redirect("/");
-})
+
+
+module.exports = hubby;
